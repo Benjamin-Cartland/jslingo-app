@@ -313,14 +313,20 @@ const handleClick = () => { ... };
 
 ## Git Commit Message Format
 
+Use conventional commits with detailed descriptions:
+
 ```
-feat: Add new level for async/await
-fix: Correct output validation for arrays
-style: Update button hover states
-refactor: Simplify code execution logic
-docs: Update README with deployment steps
-chore: Update dependencies
+<type>: <short summary>
+
+- Bullet point describing change 1
+- Bullet point describing change 2
+
+🤖 Generated with [Claude Code](https://claude.com/claude-code)
+
+Co-Authored-By: Claude <noreply@anthropic.com>
 ```
+
+**Types:** feat, fix, docs, style, refactor, test, chore
 
 ## When Making Changes
 
