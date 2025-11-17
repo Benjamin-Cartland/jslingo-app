@@ -241,21 +241,35 @@ Right Panel - Code Editor:
 
 ### Deployment Requirements
 
-#### Self-Hosting Setup
-- Static file hosting (no backend needed)
-- Serve from `dist/` folder after build
-- Port: 3000 (configurable)
-- HTTP server options:
-  - serve (Node.js)
-  - Python http.server
-  - nginx
-  - Apache
+#### Hosting Platform
+- **Platform**: Cloudflare Pages
+- **Build Command**: `npm run build`
+- **Build Output Directory**: `dist/`
+- **Node Version**: 18.x or higher
+- **Framework Preset**: Vite (auto-detected)
 
-#### Remote Access (Tailscale)
-- Must be accessible via Tailscale VPN
-- No public internet exposure required
-- Use Tailscale MagicDNS for easy access
-- Format: http://macmini.tail-scale.ts.net:3000
+#### Cloudflare Pages Configuration
+- Static site deployment (no backend needed)
+- Automatic builds from GitHub repository
+- Deploy on push to `main` branch
+- Environment: Production
+- Single Page Application (SPA) routing:
+  - All routes should serve `index.html`
+  - Use `_redirects` file or Cloudflare Pages routing if needed
+
+#### Build Settings
+```
+Build command: npm run build
+Build output directory: dist
+Root directory: /
+Node version: 18
+```
+
+#### Domain & Access
+- Custom domain support via Cloudflare Pages
+- Automatic HTTPS/SSL certificates
+- Global CDN distribution
+- No VPN or private network required (publicly accessible)
 
 ### Testing Requirements
 - Manual testing of all 15 levels
@@ -301,10 +315,11 @@ The application is considered complete when:
 4. Code execution works reliably
 5. Validation provides accurate feedback
 6. User can complete full learning path
-7. Application deploys successfully to Mac mini
-8. Remote access via Tailscale works
-9. No critical bugs or crashes
-10. Code is clean and maintainable
+7. Application deploys successfully to Cloudflare Pages
+8. Production build is publicly accessible via HTTPS
+9. Automatic deployments from GitHub work correctly
+10. No critical bugs or crashes
+11. Code is clean and maintainable
 
 ### License & Usage
 - Project is for personal use
