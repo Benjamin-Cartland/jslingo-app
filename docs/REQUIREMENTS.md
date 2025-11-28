@@ -6,10 +6,11 @@ JSLingo is an interactive JavaScript learning platform that provides hands-on co
 ## Core Requirements
 
 ### Technology Stack
-- **Framework**: React 18+ with Vite
-- **Styling**: Tailwind CSS (utility-first approach)
+- **Framework**: React 19+ with Vite 7+
+- **Styling**: Tailwind CSS v4 (utility-first approach) with @tailwindcss/postcss
 - **Icons**: lucide-react
 - **Language**: JavaScript (ES6+)
+- **Build Requirements**: Node.js 20.19+ or 22.12+ (required for Vite 7+)
 - **Storage**: Browser localStorage for progress persistence
 - **Code Evaluation**: eval() with console.log interception for simple cases
 
@@ -245,7 +246,7 @@ Right Panel - Code Editor:
 - **Platform**: Cloudflare Pages
 - **Build Command**: `npm run build`
 - **Build Output Directory**: `dist/`
-- **Node Version**: 18.x or higher
+- **Node Version**: 20.19 or higher (or 22.12+)
 - **Framework Preset**: Vite (auto-detected)
 
 #### Cloudflare Pages Configuration
@@ -262,7 +263,7 @@ Right Panel - Code Editor:
 Build command: npm run build
 Build output directory: dist
 Root directory: /
-Node version: 18
+Node version: 20.19 or 22.12+
 ```
 
 #### Domain & Access

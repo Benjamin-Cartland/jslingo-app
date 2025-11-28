@@ -33,7 +33,7 @@ An interactive JavaScript learning platform with 15 hands-on coding exercises. L
 
 ### Prerequisites
 
-- Node.js 18+ and npm
+- Node.js 20.19+ or 22.12+ and npm (required for Vite 7+)
 - Modern web browser (Chrome, Firefox, Safari, or Edge)
 
 ### Installation
@@ -66,9 +66,9 @@ The production-ready files will be in the `dist/` directory.
 
 ## 📦 Tech Stack
 
-- **React 18** - UI framework
-- **Vite** - Build tool and dev server
-- **Tailwind CSS** - Utility-first styling
+- **React 19** - UI framework
+- **Vite 7** - Build tool and dev server
+- **Tailwind CSS v4** - Utility-first styling (with @tailwindcss/postcss)
 - **Lucide React** - Icon library
 - **localStorage** - Progress persistence
 
@@ -78,7 +78,7 @@ The production-ready files will be in the `dist/` directory.
 jslingo-app/
 ├── src/
 │   ├── App.jsx           # Main application component
-│   ├── index.css         # Tailwind CSS imports
+│   ├── index.css         # Tailwind CSS v4 imports
 │   └── main.jsx          # React entry point
 ├── public/               # Static assets
 ├── dist/                 # Production build output
@@ -86,11 +86,10 @@ jslingo-app/
 │   ├── REQUIREMENTS.md
 │   ├── ARCHITECTURE.md
 │   └── DEPLOYMENT.md
-├── .claude/
-│   └── rules.md          # Claude Code development rules
+├── CLAUDE.md             # Claude Code development rules
 ├── package.json
 ├── vite.config.js
-├── tailwind.config.js
+├── postcss.config.js     # PostCSS with @tailwindcss/postcss
 └── README.md
 ```
 

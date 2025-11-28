@@ -9,7 +9,7 @@ This guide covers deploying JSLingo to a Mac mini for self-hosting with remote a
 - Mac mini (any recent model)
 - macOS 12+ (Monterey or later)
 - Homebrew installed
-- Node.js 18+ and npm
+- Node.js 20.19+ or 22.12+ and npm (required for Vite 7+)
 - Internet connection
 - Tailscale account (free tier sufficient)
 
@@ -22,7 +22,7 @@ brew --version
 /bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
 
 # Check Node.js version
-node --version  # Should be 18+
+node --version  # Should be 20.19+ or 22.12+
 npm --version
 
 # Install Node.js if needed
