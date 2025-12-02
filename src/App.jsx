@@ -324,31 +324,51 @@ const JSLingo = () => {
     setFeedback(null);
   }, [currentLevel]);
 
-  // Simple code execution simulation
+  // Secure sandboxed code execution using iframe isolation
   const executeCode = (code) => {
-    try {
-      // Capture console.log output
-      const logs = [];
-      const originalLog = console.log;
-      console.log = (...args) => {
-        logs.push(args.map(arg => {
-          if (Array.isArray(arg)) {
-            return JSON.stringify(arg).replace(/\s/g, '');
-          }
-          return String(arg);
-        }).join(' '));
+    return new Promise((resolve) => {
+      const iframe = document.createElement('iframe');
+      iframe.sandbox = 'allow-scripts'; // No same-origin = complete isolation
+      iframe.style.display = 'none';
+      document.body.appendChild(iframe);
+
+      const timeoutId = setTimeout(() => {
+        cleanup();
+        resolve('Error: Execution timed out (infinite loop?)');
+      }, 5000);
+
+      const cleanup = () => {
+        window.removeEventListener('message', onMessage);
+        iframe.remove();
       };
 
-      // Execute the code
-      eval(code);
+      const onMessage = (e) => {
+        if (e.source !== iframe.contentWindow) return;
+        clearTimeout(timeoutId);
+        cleanup();
+        resolve(e.data.error ? 'Error: ' + e.data.error : e.data.output);
+      };
 
-      // Restore console.log
-      console.log = originalLog;
+      window.addEventListener('message', onMessage);
 
-      return logs.join('\n');
-    } catch (error) {
-      return "Error: " + error.message;
-    }
+      iframe.srcdoc = `<!DOCTYPE html><script>
+        // Block dangerous APIs
+        ['localStorage','sessionStorage','indexedDB','fetch','XMLHttpRequest','WebSocket','Worker'].forEach(k => delete window[k]);
+        window.open = window.alert = window.confirm = window.prompt = () => {};
+
+        const logs = [];
+        console.log = (...args) => logs.push(args.map(a =>
+          Array.isArray(a) ? JSON.stringify(a).replace(/\\s/g,'') : String(a)
+        ).join(' '));
+
+        try {
+          ${code.replace(/<\/script>/gi, '<\\/script>')}
+          parent.postMessage({ output: logs.join('\\n') }, '*');
+        } catch(e) {
+          parent.postMessage({ error: e.message }, '*');
+        }
+      <\/script>`;
+    });
   };
 
   const handleSubmit = async () => {
@@ -416,7 +436,7 @@ DO NOT OUTPUT ANYTHING OTHER THAN VALID JSON.
     } catch (error) {
       console.error('Error evaluating code:', error);
       // Fallback to simple output comparison if Claude evaluation fails
-      const output = executeCode(userCode);
+      const output = await executeCode(userCode);
       const isCorrect = output.trim() === level.expectedOutput.trim();
 
       if (isCorrect) {
