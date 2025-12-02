@@ -1,0 +1,138 @@
+{
+  "master": {
+    "tasks": [
+      {
+        "id": 1,
+        "title": "Add Difficulty Ratings to Existing Levels",
+        "description": "Extend the level data model to include difficulty ratings and display them in the UI for all 15 existing levels.",
+        "details": "1. Add a 'difficulty' property to each level object in the levels array with values: 'beginner' (levels 1-5), 'easy' (levels 6-10), 'intermediate' (levels 11-15)\n\n2. Update the level data structure:\n```javascript\n{\n  id: 1,\n  title: 'Hello World',\n  difficulty: 'beginner', // NEW FIELD\n  // ... existing fields\n}\n```\n\n3. Create difficulty badge component inline:\n```javascript\nconst DifficultyBadge = ({ difficulty }) => {\n  const colors = {\n    beginner: 'bg-green-100 text-green-800',\n    easy: 'bg-blue-100 text-blue-800',\n    intermediate: 'bg-yellow-100 text-yellow-800',\n    advanced: 'bg-red-100 text-red-800'\n  };\n  return (\n    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors[difficulty]}`}>\n      {t(`difficulty.${difficulty}`)}\n    </span>\n  );\n};\n```\n\n4. Add translations for difficulty labels to TRANSLATIONS object:\n```javascript\n'difficulty.beginner': 'Beginner',\n'difficulty.easy': 'Easy',\n'difficulty.intermediate': 'Intermediate',\n'difficulty.advanced': 'Advanced'\n```\n\n5. Display badge in level header and level selector modal cards",
+        "testStrategy": "1. Verify all 15 levels have difficulty property set\n2. Check badge renders with correct color for each difficulty tier\n3. Test translations work correctly\n4. Verify badge displays in both main view and level selector modal\n5. Test responsive layout with badge doesn't break on mobile",
+        "priority": "high",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 2,
+        "title": "Implement Achievement Badge System",
+        "description": "Create an achievement system that awards badges for milestones like completing first level, achieving 5-streak, and finishing all levels.",
+        "details": "1. Define achievements data structure:\n```javascript\nconst ACHIEVEMENTS = [\n  { id: 'first_step', icon: 'Star', condition: (state) => state.completedLevels.size >= 1 },\n  { id: 'streak_5', icon: 'Flame', condition: (state) => state.maxStreak >= 5 },\n  { id: 'streak_10', icon: 'Zap', condition: (state) => state.maxStreak >= 10 },\n  { id: 'halfway', icon: 'Award', condition: (state) => state.completedLevels.size >= 8 },\n  { id: 'completionist', icon: 'Trophy', condition: (state) => state.completedLevels.size >= 15 },\n  { id: 'beginner_master', icon: 'GraduationCap', condition: (state) => [1,2,3,4,5].every(id => state.completedLevels.has(id)) }\n];\n```\n\n2. Add translations for each achievement title and description\n\n3. Add state for tracking:\n```javascript\nconst [unlockedAchievements, setUnlockedAchievements] = useState(new Set());\nconst [maxStreak, setMaxStreak] = useState(0);\nconst [showAchievementModal, setShowAchievementModal] = useState(null);\n```\n\n4. Create useEffect to check achievements after state changes and show notification modal when new achievement unlocked\n\n5. Add achievements display section in header showing unlocked badges with lucide-react icons\n\n6. Update localStorage schema to persist unlockedAchievements and maxStreak\n\n7. Create achievement notification modal with celebratory styling",
+        "testStrategy": "1. Complete first level - verify 'first_step' achievement unlocks\n2. Get 5 correct answers in a row - verify 'streak_5' unlocks\n3. Complete all levels - verify 'completionist' unlocks\n4. Refresh browser - verify achievements persist\n5. Test achievement modal displays correctly\n6. Verify duplicate achievements don't re-trigger notifications",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 3,
+        "title": "Add 5 New Intermediate Levels (Arrow Functions)",
+        "description": "Create 5 new levels (16-20) introducing arrow function syntax, building progressively from basic arrow functions to arrow functions with array methods.",
+        "details": "1. Add Level 16: Basic Arrow Function\n```javascript\n{\n  id: 16,\n  title: 'Arrow Functions',\n  difficulty: 'intermediate',\n  task: 'Convert the function below to an arrow function and call it',\n  starterCode: '// Convert to arrow function\\nfunction double(x) { return x * 2; }\\n// Call it with 5',\n  expectedOutput: '10',\n  hint: 'Arrow syntax: const name = (params) => expression',\n  solution: 'const double = (x) => x * 2;\\nconsole.log(double(5));'\n}\n```\n\n2. Add Level 17: Arrow Function with Multiple Params\n- Task: Create arrow function that adds two numbers\n- expectedOutput: '15'\n\n3. Add Level 18: Arrow Function with Block Body\n- Task: Create arrow function with if statement inside\n- Teaches when to use {} and return\n\n4. Add Level 19: Arrow Functions with Arrays (forEach)\n- Task: Use forEach with arrow function to log each element\n- Introduces callback pattern\n\n5. Add Level 20: Arrow Function Shorthand\n- Task: Use implicit return with object literal\n- Teaches wrapping in parentheses\n\n6. Add all translations for new level content\n\n7. Update level unlocking logic to handle 20 levels",
+        "testStrategy": "1. Play through all 5 new levels in sequence\n2. Verify each level's expected output matches solution\n3. Test hint content is helpful and accurate\n4. Verify levels 16-20 are locked until level 15 complete\n5. Test progress saves correctly for new levels\n6. Verify difficulty badge shows 'intermediate' for all new levels",
+        "priority": "high",
+        "dependencies": [
+          1
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 4,
+        "title": "Add 5 New Levels for Array Methods (map, filter, reduce)",
+        "description": "Create 5 new levels (21-25) teaching modern array methods including map, filter, reduce, and combining them.",
+        "details": "1. Add Level 21: Array.map() Basics\n```javascript\n{\n  id: 21,\n  title: 'Array Map',\n  difficulty: 'intermediate',\n  task: 'Use map() to double each number in the array',\n  starterCode: 'const numbers = [1, 2, 3, 4, 5];\\n// Use map to double each number and log the result',\n  expectedOutput: '2,4,6,8,10',\n  hint: 'array.map(item => transform(item)) returns a new array',\n  solution: 'const numbers = [1, 2, 3, 4, 5];\\nconsole.log(numbers.map(n => n * 2).join(\",\"));'\n}\n```\n\n2. Add Level 22: Array.filter() Basics\n- Task: Filter array to keep only even numbers\n- expectedOutput: '2,4'\n\n3. Add Level 23: Array.reduce() Introduction\n- Task: Sum all numbers in array using reduce\n- expectedOutput: '15'\n- Includes detailed hint about accumulator pattern\n\n4. Add Level 24: Chaining map and filter\n- Task: Filter evens, then double them\n- Teaches method chaining\n\n5. Add Level 25: Array.find() and Array.includes()\n- Task: Find first number greater than 3\n- expectedOutput: '4'\n\n6. Update TRANSLATIONS with all new content\n\n7. Set difficulty to 'intermediate' for all",
+        "testStrategy": "1. Complete levels 16-20 first to unlock\n2. Play through all 5 array method levels\n3. Test various correct solutions work (AI validation flexibility)\n4. Verify solutions match expected output\n5. Test hints provide useful guidance\n6. Check progress persistence includes new levels",
+        "priority": "high",
+        "dependencies": [
+          3
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 5,
+        "title": "Implement Practice Mode for Completed Levels",
+        "description": "Add a practice mode that generates variations of completed levels for additional practice without affecting progress.",
+        "details": "1. Add practice variations to level data:\n```javascript\n{\n  id: 1,\n  // ... existing fields\n  practiceVariations: [\n    { task: 'Log \"Goodbye World\" instead', expectedOutput: 'Goodbye World' },\n    { task: 'Log your name', expectedOutput: null, aiOnly: true }\n  ]\n}\n```\n\n2. Add state for practice mode:\n```javascript\nconst [isPracticeMode, setIsPracticeMode] = useState(false);\nconst [currentVariation, setCurrentVariation] = useState(0);\n```\n\n3. Add 'Practice' button to completed levels (only shows when level is complete)\n\n4. Create practice mode UI:\n- Different header color (purple theme instead of blue)\n- Shows variation number (e.g., 'Practice 1 of 3')\n- 'Next Variation' button\n- 'Exit Practice' button\n- Streak does NOT increment in practice mode\n\n5. Add translations for practice mode UI elements\n\n6. Practice mode validation:\n- If expectedOutput provided, use normal comparison\n- If aiOnly: true, only use AI validation\n- Show encouraging feedback regardless of streak impact",
+        "testStrategy": "1. Complete Level 1, verify Practice button appears\n2. Enter practice mode, verify UI changes to purple theme\n3. Complete practice variation, verify streak unchanged\n4. Test navigation between variations\n5. Exit practice mode, verify returns to normal level view\n6. Verify practice not available for incomplete levels",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 6,
+        "title": "Add 'Why This Works' Explanations",
+        "description": "Display educational explanations after correct solutions to reinforce learning concepts.",
+        "details": "1. Add 'explanation' field to each level:\n```javascript\n{\n  id: 1,\n  // ... existing fields\n  explanation: 'console.log() is JavaScript\\'s way of printing output. The text inside the parentheses (called an argument) gets displayed. Strings must be wrapped in quotes - single or double both work!'\n}\n```\n\n2. Write explanations for all 15 existing levels covering:\n- What the concept does\n- Why it's useful\n- Common variations/alternatives\n- Real-world use cases (brief)\n\n3. Update success feedback display:\n```javascript\n{feedback?.type === 'success' && (\n  <div className=\"mt-4 bg-blue-50 p-4 rounded-lg\">\n    <h4 className=\"font-semibold text-blue-800 flex items-center gap-2\">\n      <Lightbulb className=\"w-5 h-5\" />\n      {t('explanation.title')}\n    </h4>\n    <p className=\"text-blue-700 mt-2\">{levels[currentLevel - 1].explanation}</p>\n  </div>\n)}\n```\n\n4. Add toggle to show/hide explanation (default: shown)\n\n5. Add translations for explanation section labels",
+        "testStrategy": "1. Complete Level 1, verify explanation appears below success message\n2. Check explanations for levels 1-15 are accurate and helpful\n3. Test explanation toggle hides/shows content\n4. Verify explanation doesn't show on error feedback\n5. Test explanation text is readable on mobile",
+        "priority": "medium",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 7,
+        "title": "Create XP/Points System",
+        "description": "Implement an experience points system that awards points for completing levels based on difficulty and tracks total XP.",
+        "details": "1. Define XP values by difficulty:\n```javascript\nconst XP_VALUES = {\n  beginner: 10,\n  easy: 20,\n  intermediate: 30,\n  advanced: 50\n};\n```\n\n2. Add XP state and persistence:\n```javascript\nconst [totalXP, setTotalXP] = useState(0);\nconst [levelXPAwarded, setLevelXPAwarded] = useState(new Set());\n```\n\n3. Award XP on level completion (only first time):\n```javascript\nconst awardXP = (levelId) => {\n  if (levelXPAwarded.has(levelId)) return;\n  const level = levels.find(l => l.id === levelId);\n  const xp = XP_VALUES[level.difficulty];\n  setTotalXP(prev => prev + xp);\n  setLevelXPAwarded(new Set([...levelXPAwarded, levelId]));\n};\n```\n\n4. Display XP in header:\n```javascript\n<div className=\"flex items-center gap-2 text-yellow-500\">\n  <Star className=\"w-5 h-5\" />\n  <span className=\"font-bold\">{totalXP} XP</span>\n</div>\n```\n\n5. Show XP gained animation on level complete:\n- '+10 XP' floating text that fades up\n- Brief celebration effect\n\n6. Add XP-based achievements to achievement system:\n- 'First Points' (10 XP)\n- 'Century' (100 XP)\n- 'XP Master' (500 XP)\n\n7. Update localStorage schema",
+        "testStrategy": "1. Complete beginner level, verify +10 XP awarded\n2. Complete intermediate level, verify +30 XP awarded\n3. Repeat same level, verify no duplicate XP\n4. Refresh browser, verify XP persists\n5. Test XP animation displays correctly\n6. Verify XP-based achievements unlock at thresholds",
+        "priority": "medium",
+        "dependencies": [
+          1,
+          2
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 8,
+        "title": "Implement Progress Export/Import",
+        "description": "Add ability to export progress as JSON file and import to restore progress on different devices.",
+        "details": "1. Create export function:\n```javascript\nconst exportProgress = () => {\n  const progress = {\n    version: 1,\n    exportDate: new Date().toISOString(),\n    completedLevels: [...completedLevels],\n    streak: streak,\n    maxStreak: maxStreak,\n    currentLevel: currentLevel,\n    totalXP: totalXP,\n    unlockedAchievements: [...unlockedAchievements]\n  };\n  const blob = new Blob([JSON.stringify(progress, null, 2)], { type: 'application/json' });\n  const url = URL.createObjectURL(blob);\n  const a = document.createElement('a');\n  a.href = url;\n  a.download = `jslingo-progress-${new Date().toISOString().split('T')[0]}.json`;\n  a.click();\n};\n```\n\n2. Create import function:\n```javascript\nconst importProgress = (event) => {\n  const file = event.target.files[0];\n  const reader = new FileReader();\n  reader.onload = (e) => {\n    try {\n      const data = JSON.parse(e.target.result);\n      // Validate schema version\n      if (data.version !== 1) throw new Error('Incompatible version');\n      // Restore state\n      setCompletedLevels(new Set(data.completedLevels));\n      setStreak(data.streak || 0);\n      // ... restore other fields\n    } catch (err) {\n      setFeedback({ type: 'error', message: t('import.error') });\n    }\n  };\n  reader.readAsText(file);\n};\n```\n\n3. Add UI in settings/menu area:\n- Export button with Download icon\n- Import button (hidden file input) with Upload icon\n- Confirmation modal before import (warns about overwriting)\n\n4. Add translations for import/export UI",
+        "testStrategy": "1. Click export, verify JSON file downloads\n2. Open exported file, verify all progress data present\n3. Reset progress, then import file, verify restoration\n4. Try importing invalid file, verify error message\n5. Test import with missing fields uses defaults\n6. Verify import confirmation modal prevents accidental overwrites",
+        "priority": "medium",
+        "dependencies": [
+          2,
+          7
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 9,
+        "title": "Add Common Mistakes Database with Targeted Hints",
+        "description": "Create a system that detects common coding mistakes and provides specific, helpful error messages instead of generic errors.",
+        "details": "1. Define common mistakes patterns:\n```javascript\nconst COMMON_MISTAKES = [\n  {\n    pattern: /console\\.Log\\(/i,\n    wrongPattern: true,\n    message: 'JavaScript is case-sensitive! Use console.log() with lowercase \"l\"'\n  },\n  {\n    pattern: /console\\.log\\([^'\"][^)]*[^'\"]\\)/,\n    levelHint: [1, 3, 4], // Applicable to string levels\n    message: 'Strings need quotes! Wrap your text in \"double\" or \\'single\\' quotes'\n  },\n  {\n    pattern: /=(?!=)/,\n    checkContext: (code) => code.includes('if') && !code.includes('=='),\n    message: 'In conditions, use == or === for comparison, not = (assignment)'\n  },\n  {\n    pattern: /for\\s*\\([^;]*;[^;]*;[^)]*\\)\\s*;/,\n    message: 'Oops! You have a semicolon right after your for loop - the loop body won\\'t execute'\n  },\n  {\n    pattern: /function\\s+\\w+\\s*\\([^)]*\\)\\s*[^{]/,\n    message: 'Functions need curly braces {} around their body'\n  }\n];\n```\n\n2. Create mistake detection function:\n```javascript\nconst detectCommonMistake = (code, levelId) => {\n  for (const mistake of COMMON_MISTAKES) {\n    if (mistake.levelHint && !mistake.levelHint.includes(levelId)) continue;\n    if (mistake.pattern.test(code)) {\n      if (mistake.checkContext && !mistake.checkContext(code)) continue;\n      return mistake.message;\n    }\n  }\n  return null;\n};\n```\n\n3. Integrate into code execution:\n- Run mistake detection before eval\n- Show targeted hint in feedback if mistake detected\n- Still show actual error if no common mistake matches\n\n4. Add 15-20 common JavaScript beginner mistakes\n\n5. Track which mistakes user makes for potential analytics",
+        "testStrategy": "1. Type 'console.Log(\"test\")' - verify case-sensitivity hint\n2. Type 'console.log(hello)' without quotes - verify string hint\n3. Type 'if (x = 5)' - verify assignment vs comparison hint\n4. Test actual runtime errors still display correctly\n5. Verify hints don't trigger false positives on correct code",
+        "priority": "low",
+        "dependencies": [
+          6
+        ],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 10,
+        "title": "Implement Full Keyboard Navigation",
+        "description": "Add comprehensive keyboard shortcuts and ensure all interactive elements are accessible via keyboard navigation.",
+        "details": "1. Define keyboard shortcuts:\n```javascript\nconst KEYBOARD_SHORTCUTS = {\n  'ctrl+enter': 'runCode',\n  'cmd+enter': 'runCode',\n  'escape': 'closeModal',\n  'h': 'toggleHint',\n  'n': 'nextLevel',\n  'p': 'prevLevel',\n  'l': 'openLevelSelector',\n  '?': 'showKeyboardHelp'\n};\n```\n\n2. Add useEffect for keyboard listener:\n```javascript\nuseEffect(() => {\n  const handleKeyDown = (e) => {\n    // Don't capture when typing in editor\n    if (e.target.tagName === 'TEXTAREA') {\n      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {\n        e.preventDefault();\n        runCode();\n      }\n      return;\n    }\n    // Handle global shortcuts\n    const key = e.key.toLowerCase();\n    switch(key) {\n      case 'h': toggleHint(); break;\n      case 'n': nextLevel(); break;\n      // ... etc\n    }\n  };\n  window.addEventListener('keydown', handleKeyDown);\n  return () => window.removeEventListener('keydown', handleKeyDown);\n}, [dependencies]);\n```\n\n3. Add keyboard help modal:\n- Triggered by '?' key\n- Lists all available shortcuts\n- Accessible via button for discoverability\n\n4. Ensure focus management:\n- Modal trap focus when open\n- Return focus to trigger on modal close\n- Visible focus indicators (ring-2 ring-blue-500)\n\n5. Add tabIndex where needed for custom interactive elements\n\n6. Add aria-labels and roles for screen readers\n\n7. Add translations for keyboard help content",
+        "testStrategy": "1. Press Ctrl+Enter in editor - verify code runs\n2. Press 'h' outside editor - verify hint toggles\n3. Press Escape - verify modals close\n4. Tab through entire app - verify all elements reachable\n5. Test with screen reader (VoiceOver/NVDA)\n6. Verify focus visible on all interactive elements\n7. Test modal focus trap works correctly",
+        "priority": "low",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      }
+    ],
+    "metadata": {
+      "created": "2025-12-02T02:59:29.204Z",
+      "updated": "2025-12-02T02:59:29.204Z",
+      "description": "Tasks for master context"
+    }
+  }
+}
