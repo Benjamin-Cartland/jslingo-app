@@ -366,19 +366,17 @@ Output: dist/ folder
   │   └── index-[hash].css
 ```
 
-### Deployment
+### Deployment (Cloudflare Pages)
 ```
-dist/ folder
+git push origin main
   ↓
-Copy to web server
+Cloudflare Pages webhook triggered
   ↓
-Serve static files
+npm run build
   ↓
-HTTP Server (serve/nginx/python)
+dist/ deployed to edge network
   ↓
-Port 3000
-  ↓
-Accessible via Tailscale
+Live at https://jslingo.cartland.cc
 ```
 
 ## Testing Strategy

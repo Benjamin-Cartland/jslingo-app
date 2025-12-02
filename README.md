@@ -118,67 +118,21 @@ Your progress is automatically saved to your browser's localStorage:
 
 Click the red reset button (🔄) in the header to clear all progress.
 
-## 🖥️ Self-Hosting Guide
+## 🌐 Deployment
 
-### Option 1: Using `serve`
+JSLingo is deployed to **Cloudflare Pages** with automatic deployments from GitHub.
 
-```bash
-# Install serve globally
-npm install -g serve
+### Live Site
+Visit: [https://jslingo.cartland.cc](https://jslingo.cartland.cc)
 
-# Build the app
-npm run build
+### Deploy Your Own
+1. Fork this repository
+2. Connect to [Cloudflare Pages](https://pages.cloudflare.com)
+3. Set build command: `npm run build`
+4. Set output directory: `dist`
+5. Push to deploy automatically
 
-# Serve on port 3000
-serve -s dist -l 3000
-```
-
-### Option 2: Using Python
-
-```bash
-# Build the app
-npm run build
-
-# Serve using Python
-cd dist
-python3 -m http.server 3000
-```
-
-### Option 3: Using Nginx
-
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed nginx configuration.
-
-## 🌐 Remote Access with Tailscale
-
-Access your self-hosted instance remotely using Tailscale:
-
-1. Install Tailscale on your Mac mini
-2. Install Tailscale on your remote device(s)
-3. Get your Mac mini's Tailscale IP
-4. Access via `http://100.x.x.x:3000`
-
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for complete setup instructions.
-
-## 🔧 Configuration
-
-### Auto-Start on macOS
-
-Create a LaunchAgent to start the server automatically:
-
-```bash
-# Create the plist file
-nano ~/Library/LaunchAgents/com.jslingo.app.plist
-```
-
-See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for the complete plist configuration.
-
-### Port Configuration
-
-Change the default port (3000) by modifying the serve command:
-
-```bash
-serve -s dist -l 8080  # Use port 8080 instead
-```
+See [DEPLOYMENT.md](docs/DEPLOYMENT.md) for detailed setup instructions.
 
 ## 🛠️ Development
 

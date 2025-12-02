@@ -41,8 +41,8 @@ JSLingo is deployed to **Cloudflare Pages** with automatic deployments from GitH
 ### Your App URL
 
 After deployment, your app will be available at:
-- `https://jslingo.pages.dev` (or your chosen project name)
-- Custom domain can be added in Cloudflare settings
+- `https://jslingo.cartland.cc` (custom domain)
+- Or the default `https://[project].pages.dev` URL
 
 ## Automatic Deployments
 
@@ -62,7 +62,7 @@ Cloudflare Pages runs: npm run build
     ↓
 Build output (dist/) deployed to edge network
     ↓
-Live at https://jslingo.pages.dev
+Live at https://jslingo.cartland.cc
 ```
 
 ## Build Requirements
@@ -220,7 +220,7 @@ Instant rollback with zero downtime.
 | Deploy trigger | Push to `main` branch |
 | Build command | `npm run build` |
 | Output directory | `dist/` |
-| URL | `https://jslingo.pages.dev` |
+| URL | `https://jslingo.cartland.cc` |
 | SSL | Automatic |
 | CDN | Global edge network |
 | Cost | Free |
