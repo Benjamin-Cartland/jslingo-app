@@ -475,3 +475,7 @@ If unsure about:
 - **Consistency over cleverness** - Boring code is good code
 - **Working over perfect** - Ship it, iterate later
 - **User experience first** - Code quality second, but still important
+
+## Task Master AI Instructions
+**Import Task Master's development workflow commands and guidelines, treat as if import is in the main CLAUDE.md file.**
+@./.taskmaster/CLAUDE.md

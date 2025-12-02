@@ -1,0 +1,411 @@
+<context>
+# Overview
+
+JSLingo is an interactive JavaScript learning platform with 15 progressive coding levels designed for absolute beginners. The application teaches core JavaScript fundamentals through hands-on practice with instant feedback, progress tracking, and gamification elements like streaks.
+
+**Problem Solved:** Learning to code can be intimidating and expensive. JSLingo provides a free, accessible, browser-based learning experience that requires no setup, accounts, or backend infrastructure.
+
+**Target Users:**
+- Complete programming beginners wanting to learn JavaScript
+- Students needing supplemental coding practice
+- Self-taught developers refreshing fundamentals
+
+**Value Proposition:**
+- Zero friction: No login, no setup, works offline after initial load
+- Privacy-first: All data stays in browser localStorage
+- Immediate feedback: Code runs instantly with AI-enhanced or local validation
+- Progressive difficulty: 15 carefully sequenced levels building on each concept
+
+# Core Features
+
+## 1. Interactive Code Editor
+- **What it does:** Provides a dark-themed textarea where users write JavaScript code
+- **Why it's important:** Simulates a real coding environment without requiring IDE setup
+- **How it works:** Users type code, click "Run Code" to execute, and see results immediately
+
+## 2. 15 Progressive Learning Levels
+- **What it does:** Takes learners from "Hello World" to combining arrays, loops, and functions
+- **Why it's important:** Structured progression ensures concepts build upon each other
+- **How it works:** Each level has task description, starter code, expected output, hints, and solutions
+
+**Level Progression:**
+1. Hello World (console.log)
+2. Variables and Numbers
+3. String Variables
+4. Template Literals
+5. Basic Math
+6. Conditionals (if statements)
+7. For Loops
+8. While Loops
+9. Arrays Basics
+10. Array Operations (push)
+11. Functions Basics
+12. Functions with Parameters
+13. Objects
+14. String Methods
+15. Final Challenge (combining concepts)
+
+## 3. Dual Code Validation System
+- **What it does:** Validates user code using AI evaluation with local fallback
+- **Why it's important:** Provides intelligent feedback when available, reliable basic validation always
+- **How it works:**
+  - Primary: `window.claude.complete()` API for nuanced evaluation
+  - Fallback: Local `eval()` with console.log interception for output comparison
+
+## 4. Progress Tracking & Persistence
+- **What it does:** Saves completed levels, current level, and streak to localStorage
+- **Why it's important:** Users can close browser and resume exactly where they left off
+- **How it works:** useEffect hooks save progress on state changes, load on app initialization
+
+## 5. Gamification (Streak Counter)
+- **What it does:** Tracks consecutive correct submissions with flame icon display
+- **Why it's important:** Motivates continued practice and engagement
+- **How it works:** Increments on success, resets to 0 on incorrect answer
+
+## 6. Level Selector Modal
+- **What it does:** Grid view of all 15 levels showing completion status and availability
+- **Why it's important:** Users can navigate freely while maintaining progression constraints
+- **How it works:** Modal overlay with level cards showing locked/unlocked/completed states
+
+## 7. Internationalization Infrastructure
+- **What it does:** Translation system ready for multiple languages
+- **Why it's important:** Enables future expansion to non-English speakers
+- **How it works:** `TRANSLATIONS` object with locale keys, `t()` function for all UI strings
+
+# User Experience
+
+## User Personas
+
+### Primary: Coding Curious
+- Age 16-35, no programming experience
+- Wants to learn coding but intimidated by complex setups
+- Needs immediate wins to stay motivated
+
+### Secondary: Refresher Learner
+- Has some coding background but rusty on JavaScript
+- Wants quick practice without committing to full course
+- Values efficiency and being able to jump between levels
+
+## Key User Flows
+
+### First Visit
+1. Land on app → See Level 1 with clear instructions
+2. Read task description → Write code in editor
+3. Click "Run Code" → Get instant feedback
+4. Success → See congratulations, streak increases, next level unlocks
+5. Continue or close → Progress automatically saved
+
+### Returning Visit
+1. Open app → Automatically loads saved progress
+2. Continue from current level or use level selector
+3. Complete more levels → Progress persists
+
+### Getting Stuck
+1. User struggles with level → Click "Show Hint" button
+2. Read hint → Try again
+3. Still stuck → View solution reference
+4. Move forward → Practice similar concepts in next levels
+
+## UI/UX Considerations
+- Clean, minimal interface with focus on code
+- Color coding: Blue (primary), Green (success), Yellow (hints), Red (errors)
+- Responsive design for desktop, tablet, and mobile
+- Keyboard accessible throughout
+- Dark theme code editor for reduced eye strain
+</context>
+<PRD>
+# Technical Architecture
+
+## System Components
+
+### Single-File React Application
+- **App.jsx**: ~740 lines containing all components, state, and logic
+- **main.jsx**: React 19 entry point (minimal, do not modify)
+- **index.css**: Tailwind CSS imports only
+
+### State Management (React Hooks)
+```javascript
+currentLevel: number        // Active level ID (1-15)
+userCode: string           // Code in editor textarea
+completedLevels: Set       // Completed level IDs
+showHint: boolean          // Hint visibility toggle
+feedback: object|null      // Evaluation result display
+streak: number             // Consecutive correct count
+showLevelSelector: boolean // Modal visibility
+```
+
+### localStorage Schema
+```json
+{
+  "jslingo-progress": {
+    "completedLevels": [1, 2, 3],
+    "streak": 5,
+    "currentLevel": 4,
+    "lastPlayed": "2024-01-15T10:30:00.000Z"
+  }
+}
+```
+
+## Data Models
+
+### Level Object
+```javascript
+{
+  id: number,              // Unique identifier (1-15)
+  title: string,           // Display name
+  description: string,     // Brief intro text
+  task: string,            // User-facing instructions
+  starterCode: string,     // Initial editor content
+  expectedOutput: string,  // Validation target
+  hint: string,            // Help text
+  solution: string         // Reference implementation
+}
+```
+
+### Feedback Object
+```javascript
+{
+  type: 'success' | 'error',
+  message: string,
+  explanation?: string,    // AI-provided detail
+  expectedOutput?: string  // Shown on failure
+}
+```
+
+## APIs and Integrations
+
+### Optional: Claude AI Validation
+- Endpoint: `window.claude.complete()`
+- Input: Structured prompt with task, code, expected output
+- Output: JSON with isCorrect, explanation, feedback
+- Graceful degradation: Falls back to local eval if unavailable
+
+### Code Execution
+- Method: Browser `eval()` with console interception
+- Safety: Try-catch wrapper, console.log restoration
+- Output capture: Array of logged values joined by newlines
+
+## Infrastructure Requirements
+- **Runtime**: Browser only (Chrome 90+, Firefox 88+, Safari 14+)
+- **Build**: Vite 7+ (requires Node.js 20.19+ or 22.12+)
+- **Styling**: Tailwind CSS v4 with @tailwindcss/postcss
+- **Hosting**: Static file hosting (Cloudflare Pages recommended)
+- **No backend required**
+
+# Development Roadmap
+
+## Phase 1: MVP (COMPLETED)
+- [x] 15 progressive JavaScript levels
+- [x] Interactive code editor with execution
+- [x] Progress persistence in localStorage
+- [x] Level locking/unlocking system
+- [x] Streak tracking
+- [x] Hint system
+- [x] Level selector modal
+- [x] Responsive design
+- [x] AI evaluation with local fallback
+
+## Phase 2: Content Enhancement
+- [ ] Add 10-15 additional intermediate/advanced levels
+- [ ] Introduce new concepts: arrow functions, array methods (map, filter, reduce), async/await basics
+- [ ] Create themed level packs (DOM manipulation, mini-games)
+- [ ] Add difficulty ratings to each level
+- [ ] Implement "practice mode" for completed levels (variations)
+
+## Phase 3: Gamification Expansion
+- [ ] Achievement badges for milestones (first level, 5-streak, all levels)
+- [ ] Daily challenges with rotating problems
+- [ ] Leaderboard system (optional, would require backend)
+- [ ] XP/points system for completed levels
+- [ ] Unlock cosmetic themes based on progress
+
+## Phase 4: Learning Enhancement
+- [ ] Add "Why this works" explanations after correct solutions
+- [ ] Interactive tutorials with step-by-step walkthroughs
+- [ ] Code visualization (show variable state changes)
+- [ ] Common mistakes database with targeted hints
+- [ ] Multiple valid solution recognition
+
+## Phase 5: Internationalization
+- [ ] Spanish (es-ES) translation
+- [ ] French (fr-FR) translation
+- [ ] Mandarin (zh-CN) translation
+- [ ] Language selector in UI
+- [ ] RTL support for Arabic/Hebrew
+
+## Phase 6: Accessibility & Polish
+- [ ] Full keyboard navigation
+- [ ] Screen reader optimization
+- [ ] High contrast mode
+- [ ] Font size adjustments
+- [ ] Reduced motion option
+
+## Phase 7: Advanced Features
+- [ ] Code sharing (generate shareable links)
+- [ ] Export progress as JSON
+- [ ] Import/sync progress across devices
+- [ ] Offline PWA with service worker
+- [ ] Custom level creator for educators
+
+# Logical Dependency Chain
+
+## Foundation Layer (Must exist first)
+1. React app scaffolding with Vite
+2. Tailwind CSS configuration
+3. Basic component structure
+4. Level data model definition
+
+## Core Functionality Layer
+5. Code editor textarea component
+6. Code execution with eval() and console capture
+7. Output comparison validation
+8. Feedback display system
+
+## User Experience Layer
+9. Level navigation (prev/next buttons)
+10. Progress state management
+11. localStorage persistence
+12. Level selector modal
+
+## Enhancement Layer
+13. Hint toggle system
+14. Streak counter
+15. AI validation integration
+16. Translation infrastructure
+
+## Polish Layer
+17. Responsive design refinements
+18. Animation and transitions
+19. Error boundary handling
+20. Production optimization
+
+## Future Feature Dependencies
+- Additional levels → Existing level structure
+- Achievements → Progress tracking system
+- Daily challenges → Level data + date logic
+- Multiple languages → Translation infrastructure
+- Code sharing → Server/backend (new dependency)
+- PWA → Service worker implementation
+
+# Risks and Mitigations
+
+## Technical Risks
+
+### Risk: eval() Security Concerns
+- **Impact:** Medium - could execute malicious code
+- **Mitigation:** Browser sandbox limits damage; users only run their own code; educational context acceptable
+
+### Risk: localStorage Limitations
+- **Impact:** Low - 5MB limit, can be cleared
+- **Mitigation:** Progress data is minimal (~1KB); add export feature for backup
+
+### Risk: AI API Unavailability
+- **Impact:** Low - fallback system exists
+- **Mitigation:** Local eval validation always works; AI is enhancement not requirement
+
+### Risk: Browser Compatibility
+- **Impact:** Medium - older browsers may fail
+- **Mitigation:** Target modern browsers only; Vite handles necessary polyfills
+
+## Content Risks
+
+### Risk: Level Difficulty Jumps
+- **Impact:** Medium - users may get frustrated
+- **Mitigation:** Iterative testing; hint system; solution reference available
+
+### Risk: Limited Concept Coverage
+- **Impact:** Low - MVP covers fundamentals well
+- **Mitigation:** Phase 2 adds intermediate content; clear scope communication
+
+## User Experience Risks
+
+### Risk: No Account System
+- **Impact:** Low - progress is device-specific
+- **Mitigation:** Export/import feature in Phase 7; localStorage sufficient for single-device use
+
+### Risk: Single Language
+- **Impact:** Medium - limits global reach
+- **Mitigation:** Translation infrastructure ready; Phase 5 adds languages
+
+## Resource Risks
+
+### Risk: Single-File Complexity Growth
+- **Impact:** Medium - App.jsx could become unwieldy
+- **Mitigation:** Clear code organization; intentional decision per CLAUDE.md; refactor only if >1500 lines
+
+# Appendix
+
+## JavaScript Concepts Covered
+
+| Level | Concept | ES6+ Feature |
+|-------|---------|--------------|
+| 1 | console.log() | - |
+| 2 | let/const | let |
+| 3 | Strings | - |
+| 4 | Template literals | Template literals |
+| 5 | Arithmetic | - |
+| 6 | if statements | - |
+| 7 | for loops | let in loop |
+| 8 | while loops | - |
+| 9 | Arrays | - |
+| 10 | Array.push() | - |
+| 11 | Functions | - |
+| 12 | Parameters | - |
+| 13 | Objects | - |
+| 14 | String methods | - |
+| 15 | for...of loops | for...of |
+
+## Technical Constraints (from CLAUDE.md)
+
+### Allowed
+- React 18+ functional components
+- Vite build tool
+- Tailwind CSS utility classes
+- lucide-react icons
+- JavaScript ES6+
+- localStorage
+- eval() for code execution
+
+### Forbidden
+- TypeScript source files
+- State management libraries
+- Component libraries (MUI, Chakra)
+- Backend frameworks
+- Databases
+- Additional npm dependencies
+- Class components
+- React Router
+- Custom CSS files
+
+## File Structure
+```
+jslingo-app/
+├── src/
+│   ├── App.jsx           # Main component (all code here)
+│   ├── main.jsx          # Entry point (don't modify)
+│   └── index.css         # Tailwind imports only
+├── docs/
+│   ├── REQUIREMENTS.md
+│   ├── ARCHITECTURE.md
+│   └── DEPLOYMENT.md
+├── .taskmaster/
+│   └── docs/
+│       └── prd.txt       # This file
+├── CLAUDE.md             # Development rules
+├── package.json
+├── vite.config.js
+└── postcss.config.js
+```
+
+## Performance Targets
+- Bundle size: <500KB
+- Initial load: <2 seconds
+- Code execution: <1 second
+- Smooth 60fps animations
+
+## Browser Support
+- Chrome/Edge 90+
+- Firefox 88+
+- Safari 14+
+- Modern mobile browsers
+</PRD>
