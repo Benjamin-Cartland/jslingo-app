@@ -1,686 +1,226 @@
 # JSLingo Deployment Guide
 
 ## Overview
-This guide covers deploying JSLingo to a Mac mini for self-hosting with remote access via Tailscale.
 
-## Prerequisites
+JSLingo is deployed to **Cloudflare Pages** with automatic deployments from GitHub. No self-hosting or server configuration required.
 
-### System Requirements
-- Mac mini (any recent model)
-- macOS 12+ (Monterey or later)
-- Homebrew installed
-- Node.js 20.19+ or 22.12+ and npm (required for Vite 7+)
-- Internet connection
-- Tailscale account (free tier sufficient)
+## Cloudflare Pages Setup
 
-### Check Existing Software
-```bash
-# Check if Homebrew is installed
-brew --version
+### Prerequisites
+- GitHub account with the repository
+- Cloudflare account (free tier is sufficient)
 
-# Install Homebrew if needed
-/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+### Initial Setup
 
-# Check Node.js version
-node --version  # Should be 20.19+ or 22.12+
-npm --version
+1. **Go to Cloudflare Pages**
+   - Navigate to https://dash.cloudflare.com
+   - Select "Workers & Pages" from the sidebar
+   - Click "Create application" → "Pages"
 
-# Install Node.js if needed
-brew install node
+2. **Connect to GitHub**
+   - Click "Connect to Git"
+   - Authorize Cloudflare to access your GitHub account
+   - Select the `jslingo-app` repository
+
+3. **Configure Build Settings**
+   ```
+   Project name: jslingo
+   Production branch: main
+   Build command: npm run build
+   Build output directory: dist
+   ```
+
+4. **Environment Variables** (if needed)
+   - No environment variables required for basic deployment
+   - The app runs entirely client-side
+
+5. **Deploy**
+   - Click "Save and Deploy"
+   - Wait for the build to complete (~1-2 minutes)
+
+### Your App URL
+
+After deployment, your app will be available at:
+- `https://jslingo.pages.dev` (or your chosen project name)
+- Custom domain can be added in Cloudflare settings
+
+## Automatic Deployments
+
+Once connected, Cloudflare Pages automatically:
+- Deploys on every push to `main` branch
+- Creates preview deployments for pull requests
+- Provides instant rollback capability
+
+### Deployment Workflow
+
+```
+git push origin main
+    ↓
+GitHub triggers Cloudflare webhook
+    ↓
+Cloudflare Pages runs: npm run build
+    ↓
+Build output (dist/) deployed to edge network
+    ↓
+Live at https://jslingo.pages.dev
 ```
 
-## Step 1: Build the Application
+## Build Requirements
 
-### Clone or Copy Project
+### Node.js Version
+Cloudflare Pages uses Node.js 18 by default. To ensure compatibility with Vite 7+:
+
+1. Create a `.nvmrc` file in project root:
+   ```
+   20
+   ```
+
+2. Or set in Cloudflare Pages settings:
+   - Go to Settings → Environment Variables
+   - Add: `NODE_VERSION` = `20`
+
+### Build Command
 ```bash
-# If using git
-git clone <your-repo-url> jslingo-app
-cd jslingo-app
-
-# Or if copying files manually
-mkdir jslingo-app
-cd jslingo-app
-# Copy all project files here
-```
-
-### Install Dependencies
-```bash
-# Install all required packages
-npm install
-
-# Verify installation
-npm list
-```
-
-### Build for Production
-```bash
-# Create optimized production build
 npm run build
-
-# Output will be in dist/ folder
-ls -la dist/
 ```
 
-Expected output:
+### Output Directory
 ```
 dist/
-├── assets/
-│   ├── index-[hash].css
-│   └── index-[hash].js
-└── index.html
 ```
 
-### Test Build Locally
-```bash
-# Preview the production build
-npm run preview
+## Custom Domain Setup
 
-# Visit http://localhost:4173 to test
-```
+### Add Custom Domain
 
-Verify:
-- All levels work
-- Progress saves
-- UI is responsive
-- No console errors
+1. Go to your Pages project in Cloudflare dashboard
+2. Click "Custom domains" tab
+3. Click "Set up a custom domain"
+4. Enter your domain (e.g., `jslingo.com`)
+5. Follow DNS configuration instructions
 
-## Step 2: Choose Hosting Method
+### DNS Configuration
 
-### Option A: Using `serve` (Recommended)
+If your domain is on Cloudflare:
+- Automatic configuration
 
-**Advantages:**
-- Simple setup
-- Easy to configure
-- Good for permanent hosting
+If your domain is elsewhere:
+- Add a CNAME record pointing to `jslingo.pages.dev`
 
-**Installation:**
-```bash
-# Install globally
-npm install -g serve
+## Monitoring & Analytics
 
-# Verify installation
-serve --version
-```
+### Built-in Analytics
+Cloudflare Pages provides:
+- Request counts
+- Bandwidth usage
+- Geographic distribution
+- Error rates
 
-**Run the server:**
-```bash
-# From project root
-serve -s dist -l 3000
+Access via: Dashboard → Workers & Pages → jslingo → Analytics
 
-# Server will start on port 3000
-# Visit http://localhost:3000
-```
-
-**Configuration file (optional):**
-Create `serve.json` in project root:
-```json
-{
-  "public": "dist",
-  "rewrites": [
-    { "source": "/**", "destination": "/index.html" }
-  ],
-  "headers": [
-    {
-      "source": "**/*.@(js|css)",
-      "headers": [
-        {
-          "key": "Cache-Control",
-          "value": "public, max-age=31536000"
-        }
-      ]
-    }
-  ]
-}
-```
-
-### Option B: Using Python HTTP Server
-
-**Advantages:**
-- No installation needed (Python comes with macOS)
-- Very simple
-
-**Run the server:**
-```bash
-cd dist
-python3 -m http.server 3000
-```
-
-**Limitations:**
-- No automatic restart on crash
-- Basic features only
-- Less performant
-
-### Option C: Using Nginx (Advanced)
-
-**Advantages:**
-- Professional-grade
-- High performance
-- Advanced features
-
-**Installation:**
-```bash
-brew install nginx
-```
-
-**Configuration:**
-Edit `/usr/local/etc/nginx/nginx.conf`:
-```nginx
-http {
-    server {
-        listen 3000;
-        server_name localhost;
-        
-        root /Users/YOUR_USERNAME/jslingo-app/dist;
-        index index.html;
-        
-        location / {
-            try_files $uri $uri/ /index.html;
-        }
-        
-        # Cache static assets
-        location ~* \.(js|css|png|jpg|jpeg|gif|ico)$ {
-            expires 1y;
-            add_header Cache-Control "public, immutable";
-        }
-    }
-}
-```
-
-**Start Nginx:**
-```bash
-brew services start nginx
-```
-
-## Step 3: Configure Auto-Start
-
-### Using macOS LaunchAgent
-
-**Create the plist file:**
-```bash
-# Create directory if it doesn't exist
-mkdir -p ~/Library/LaunchAgents
-
-# Create the plist file
-nano ~/Library/LaunchAgents/com.jslingo.app.plist
-```
-
-**For `serve` method:**
-```xml
-<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
-<plist version="1.0">
-<dict>
-    <key>Label</key>
-    <string>com.jslingo.app</string>
-    
-    <key>ProgramArguments</key>
-    <array>
-        <string>/usr/local/bin/serve</string>
-        <string>-s</string>
-        <string>/Users/YOUR_USERNAME/jslingo-app/dist</string>
-        <string>-l</string>
-        <string>3000</string>
-    </array>
-    
-    <key>RunAtLoad</key>
-    <true/>
-    
-    <key>KeepAlive</key>
-    <true/>
-    
-    <key>StandardOutPath</key>
-    <string>/tmp/jslingo.log</string>
-    
-    <key>StandardErrorPath</key>
-    <string>/tmp/jslingo.error.log</string>
-    
-    <key>WorkingDirectory</key>
-    <string>/Users/YOUR_USERNAME/jslingo-app</string>
-    
-    <key>EnvironmentVariables</key>
-    <dict>
-        <key>PATH</key>
-        <string>/usr/local/bin:/usr/bin:/bin:/usr/sbin:/sbin</string>
-    </dict>
-</dict>
-</plist>
-```
-
-**Important:** Replace `YOUR_USERNAME` with your actual macOS username.
-
-**Find your username:**
-```bash
-whoami
-```
-
-**Find serve path (if different):**
-```bash
-which serve
-```
-
-**Load the LaunchAgent:**
-```bash
-# Load the service
-launchctl load ~/Library/LaunchAgents/com.jslingo.app.plist
-
-# Verify it's loaded
-launchctl list | grep jslingo
-```
-
-**Manage the service:**
-```bash
-# Stop the service
-launchctl unload ~/Library/LaunchAgents/com.jslingo.app.plist
-
-# Start the service
-launchctl load ~/Library/LaunchAgents/com.jslingo.app.plist
-
-# Reload after changes
-launchctl unload ~/Library/LaunchAgents/com.jslingo.app.plist
-launchctl load ~/Library/LaunchAgents/com.jslingo.app.plist
-```
-
-## Step 4: Install & Configure Tailscale
-
-### Install Tailscale
-```bash
-# Via Homebrew
-brew install tailscale
-
-# Or download from https://tailscale.com/download/mac
-```
-
-### Start Tailscale
-```bash
-# Start and authenticate
-sudo tailscale up
-
-# You'll get a URL to authenticate in browser
-# Log in with your Tailscale account
-```
-
-### Get Your Tailscale IP
-```bash
-# Get your Tailscale IPv4 address
-tailscale ip -4
-
-# Example output: 100.101.102.103
-```
-
-### Enable MagicDNS (Optional)
-1. Go to https://login.tailscale.com/admin/dns
-2. Enable MagicDNS
-3. Your Mac mini will get a hostname like: `macmini.tail-scale.ts.net`
-
-### Configure Tailscale Settings
-
-**Disable key expiry (recommended):**
-1. Go to https://login.tailscale.com/admin/machines
-2. Find your Mac mini
-3. Click "..." menu
-4. Select "Disable key expiry"
-
-**Set machine name (optional):**
-```bash
-sudo tailscale set --hostname jslingo-server
-```
-
-## Step 5: Access Remotely
-
-### From Another Device on Tailscale
-
-**Install Tailscale on client device:**
-- macOS/Linux: `brew install tailscale && sudo tailscale up`
-- Windows: Download from tailscale.com
-- iOS/Android: Install from App Store/Play Store
-
-**Access the app:**
-
-**Option 1: Using IP address**
-```
-http://100.101.102.103:3000
-```
-(Use your actual Tailscale IP)
-
-**Option 2: Using MagicDNS hostname**
-```
-http://macmini.tail-scale.ts.net:3000
-```
-or
-```
-http://jslingo-server.tail-scale.ts.net:3000
-```
-
-### Bookmark for Easy Access
-Add to browser bookmarks:
-- Name: "JSLingo"
-- URL: `http://YOUR_TAILSCALE_IP:3000`
-
-## Step 6: Verification & Testing
-
-### Local Testing
-```bash
-# Test on Mac mini itself
-curl http://localhost:3000
-
-# Should return HTML content
-
-# Check if port is listening
-lsof -i :3000
-
-# Should show serve or nginx process
-```
-
-### Remote Testing
-```bash
-# From another device on Tailscale
-curl http://100.101.102.103:3000
-
-# Should return HTML content
-```
-
-### Browser Testing
-1. Open browser on remote device
-2. Navigate to Tailscale URL
-3. Verify app loads
-4. Test all functionality:
-   - Level progression
-   - Code execution
-   - Progress saving
-   - Reset button
-   - All 15 levels
-
-### Check Logs
-```bash
-# View application logs
-cat /tmp/jslingo.log
-
-# View error logs
-cat /tmp/jslingo.error.log
-
-# Tail logs in real-time
-tail -f /tmp/jslingo.log
-```
+### Web Analytics (Optional)
+Enable Cloudflare Web Analytics for visitor insights:
+1. Go to Analytics → Web Analytics
+2. Add your site
+3. No code changes required (automatic injection)
 
 ## Troubleshooting
 
-### Server Won't Start
+### Build Failures
 
-**Check if port is already in use:**
-```bash
-lsof -i :3000
+**Check build logs:**
+1. Go to Cloudflare Pages dashboard
+2. Click on the failed deployment
+3. View "Build log" for errors
+
+**Common issues:**
+
+| Error | Solution |
+|-------|----------|
+| Node version mismatch | Add `NODE_VERSION=20` env variable |
+| Missing dependencies | Ensure `package-lock.json` is committed |
+| Build timeout | Check for infinite loops in build scripts |
+
+### Deployment Not Updating
+
+1. Verify push reached GitHub
+2. Check Cloudflare Pages for pending deployments
+3. Try manual redeploy: Dashboard → Deployments → Retry deployment
+
+### 404 Errors on Refresh
+
+Single-page apps need redirect rules. Create `public/_redirects`:
+```
+/*    /index.html   200
 ```
 
-**Kill the process if needed:**
-```bash
-kill -9 <PID>
+Or the redirect is handled automatically by Vite's build output.
+
+## Performance
+
+### Cloudflare Edge Network
+- Content served from 300+ locations worldwide
+- Automatic SSL/TLS encryption
+- DDoS protection included
+- HTTP/3 support
+
+### Caching
+Static assets are automatically cached with optimal headers:
+- JavaScript/CSS: Long-term caching with content hashing
+- HTML: Short-term caching for instant updates
+
+## Costs
+
+### Free Tier Includes
+- 500 builds per month
+- Unlimited requests
+- Unlimited bandwidth
+- 1 concurrent build
+
+### When You Might Need Pro
+- More than 500 builds/month
+- Concurrent builds (faster CI)
+- Advanced analytics
+
+For JSLingo's scale, the free tier is more than sufficient.
+
+## Security
+
+### Automatic HTTPS
+- All traffic encrypted by default
+- Automatic certificate management
+- No configuration needed
+
+### Headers
+Cloudflare adds security headers automatically. Custom headers can be added via `_headers` file:
+
+```
+/*
+  X-Frame-Options: DENY
+  X-Content-Type-Options: nosniff
+  Referrer-Policy: strict-origin-when-cross-origin
 ```
 
-**Check serve is installed:**
-```bash
-which serve
-serve --version
-```
+## Rollback
 
-### LaunchAgent Issues
+To rollback to a previous deployment:
 
-**Check if loaded:**
-```bash
-launchctl list | grep jslingo
-```
+1. Go to Cloudflare Pages dashboard
+2. Click "Deployments" tab
+3. Find the previous working deployment
+4. Click "..." menu → "Rollback to this deployment"
 
-**Check logs:**
-```bash
-cat /tmp/jslingo.error.log
-```
+Instant rollback with zero downtime.
 
-**Reload service:**
-```bash
-launchctl unload ~/Library/LaunchAgents/com.jslingo.app.plist
-launchctl load ~/Library/LaunchAgents/com.jslingo.app.plist
-```
+## Summary
 
-**Verify plist syntax:**
-```bash
-plutil -lint ~/Library/LaunchAgents/com.jslingo.app.plist
-```
-
-### Tailscale Connection Issues
-
-**Check Tailscale status:**
-```bash
-tailscale status
-```
-
-**Restart Tailscale:**
-```bash
-sudo tailscale down
-sudo tailscale up
-```
-
-**Check firewall (if enabled):**
-```bash
-# Disable macOS firewall temporarily to test
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate off
-
-# Re-enable after testing
-sudo /usr/libexec/ApplicationFirewall/socketfilterfw --setglobalstate on
-```
-
-### Can't Access from Remote Device
-
-**Verify Tailscale is running on both devices:**
-```bash
-tailscale status
-```
-
-**Ping the Mac mini from remote device:**
-```bash
-ping 100.101.102.103
-```
-
-**Check if server is listening:**
-```bash
-# On Mac mini
-lsof -i :3000
-```
-
-**Try local access first:**
-```bash
-# On Mac mini
-curl http://localhost:3000
-```
-
-### Progress Not Saving
-
-**Check browser localStorage:**
-Open browser console (F12) on the app:
-```javascript
-localStorage.getItem('jslingo-progress')
-```
-
-**Clear and retry:**
-```javascript
-localStorage.removeItem('jslingo-progress')
-// Then refresh and test again
-```
-
-## Maintenance
-
-### Update Application
-
-**Pull latest changes:**
-```bash
-cd ~/jslingo-app
-git pull  # or copy new files manually
-```
-
-**Rebuild:**
-```bash
-npm install  # if dependencies changed
-npm run build
-```
-
-**Restart service:**
-```bash
-launchctl unload ~/Library/LaunchAgents/com.jslingo.app.plist
-launchctl load ~/Library/LaunchAgents/com.jslingo.app.plist
-```
-
-### Update Dependencies
-
-**Check for updates:**
-```bash
-npm outdated
-```
-
-**Update packages:**
-```bash
-npm update
-npm audit fix
-```
-
-**Rebuild and test:**
-```bash
-npm run build
-npm run preview
-```
-
-### Monitor Resource Usage
-
-**Check CPU/Memory:**
-```bash
-top -pid $(pgrep -f serve)
-```
-
-**Check disk space:**
-```bash
-df -h
-```
-
-**Check logs size:**
-```bash
-du -h /tmp/jslingo*.log
-```
-
-**Rotate logs if needed:**
-```bash
-# Clear old logs
-> /tmp/jslingo.log
-> /tmp/jslingo.error.log
-```
-
-## Backup & Recovery
-
-### Backup Progress Data
-Users' progress is in browser localStorage (client-side).
-No server-side backup needed for current version.
-
-### Backup Application
-```bash
-# Backup entire project
-tar -czf jslingo-backup-$(date +%Y%m%d).tar.gz ~/jslingo-app
-
-# Store in safe location
-mv jslingo-backup-*.tar.gz ~/Backups/
-```
-
-### Restore from Backup
-```bash
-# Extract backup
-tar -xzf jslingo-backup-20251111.tar.gz -C ~/
-
-# Rebuild
-cd ~/jslingo-app
-npm install
-npm run build
-
-# Restart service
-launchctl unload ~/Library/LaunchAgents/com.jslingo.app.plist
-launchctl load ~/Library/LaunchAgents/com.jslingo.app.plist
-```
-
-## Security Considerations
-
-### Tailscale Security
-- ✅ Encrypted tunnel (WireGuard)
-- ✅ No open ports to internet
-- ✅ Device authentication required
-- ✅ Access control via Tailscale admin
-
-### Local Security
-- ✅ App runs on localhost + Tailscale only
-- ✅ No external database to secure
-- ✅ No authentication system to maintain
-- ✅ User data stays in their browser
-
-### Best Practices
-1. Keep Tailscale updated
-2. Don't disable key expiry for production
-3. Use Tailscale ACLs if sharing with others
-4. Regularly update dependencies
-5. Monitor logs for issues
-
-## Performance Optimization
-
-### Nginx Caching (if using nginx)
-Already configured in nginx.conf above with:
-- 1-year cache for static assets
-- Proper headers for immutability
-
-### Build Optimization
-```bash
-# Already optimized by Vite:
-# - Code splitting
-# - Minification
-# - Tree shaking
-# - Asset optimization
-```
-
-### Mac mini Performance
-- App is lightweight (< 500KB)
-- Single-page application
-- No server-side processing
-- Should handle 50+ concurrent users easily
-
-## Alternative Deployments
-
-### Deploy to Vercel/Netlify (Future)
-If you want public hosting:
-1. Push code to GitHub
-2. Connect to Vercel/Netlify
-3. Auto-deploy on push
-4. Free tier sufficient
-
-### Docker Container (Advanced)
-```dockerfile
-FROM node:18-alpine
-WORKDIR /app
-COPY package*.json ./
-RUN npm ci
-COPY . .
-RUN npm run build
-RUN npm install -g serve
-EXPOSE 3000
-CMD ["serve", "-s", "dist", "-l", "3000"]
-```
-
-## Support & Resources
-
-### Official Documentation
-- React: https://react.dev
-- Vite: https://vitejs.dev
-- Tailwind: https://tailwindcss.com
-- Tailscale: https://tailscale.com/kb
-
-### Troubleshooting Help
-1. Check logs first: `/tmp/jslingo*.log`
-2. Test locally: `curl http://localhost:3000`
-3. Verify Tailscale: `tailscale status`
-4. Check this guide's troubleshooting section
-
-### Getting Help
-- Review REQUIREMENTS.md for specifications
-- Review ARCHITECTURE.md for technical details
-- Check GitHub issues (if using GitHub)
-- Tailscale support: https://tailscale.com/contact/support
+| Aspect | Detail |
+|--------|--------|
+| Hosting | Cloudflare Pages |
+| Deploy trigger | Push to `main` branch |
+| Build command | `npm run build` |
+| Output directory | `dist/` |
+| URL | `https://jslingo.pages.dev` |
+| SSL | Automatic |
+| CDN | Global edge network |
+| Cost | Free |

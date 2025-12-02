@@ -189,7 +189,7 @@ showLevelSelector: boolean // Modal visibility
 - **Runtime**: Browser only (Chrome 90+, Firefox 88+, Safari 14+)
 - **Build**: Vite 7+ (requires Node.js 20.19+ or 22.12+)
 - **Styling**: Tailwind CSS v4 with @tailwindcss/postcss
-- **Hosting**: Static file hosting (Cloudflare Pages recommended)
+- **Hosting**: Cloudflare Pages (auto-deploy from GitHub)
 - **No backend required**
 
 # Development Roadmap
