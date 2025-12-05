@@ -3,10 +3,10 @@
     "tasks": [
       {
         "id": 1,
-        "title": "Add Difficulty Ratings to Existing Levels",
-        "description": "Extend the level data model to include difficulty ratings and display them in the UI for all 15 existing levels.",
-        "details": "1. Add a 'difficulty' property to each level object in the levels array with values: 'beginner' (levels 1-5), 'easy' (levels 6-10), 'intermediate' (levels 11-15)\n\n2. Update the level data structure:\n```javascript\n{\n  id: 1,\n  title: 'Hello World',\n  difficulty: 'beginner', // NEW FIELD\n  // ... existing fields\n}\n```\n\n3. Create difficulty badge component inline:\n```javascript\nconst DifficultyBadge = ({ difficulty }) => {\n  const colors = {\n    beginner: 'bg-green-100 text-green-800',\n    easy: 'bg-blue-100 text-blue-800',\n    intermediate: 'bg-yellow-100 text-yellow-800',\n    advanced: 'bg-red-100 text-red-800'\n  };\n  return (\n    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors[difficulty]}`}>\n      {t(`difficulty.${difficulty}`)}\n    </span>\n  );\n};\n```\n\n4. Add translations for difficulty labels to TRANSLATIONS object:\n```javascript\n'difficulty.beginner': 'Beginner',\n'difficulty.easy': 'Easy',\n'difficulty.intermediate': 'Intermediate',\n'difficulty.advanced': 'Advanced'\n```\n\n5. Display badge in level header and level selector modal cards",
-        "testStrategy": "1. Verify all 15 levels have difficulty property set\n2. Check badge renders with correct color for each difficulty tier\n3. Test translations work correctly\n4. Verify badge displays in both main view and level selector modal\n5. Test responsive layout with badge doesn't break on mobile",
+        "title": "Create Welcome Landing Page",
+        "description": "Add a welcome landing page that explains what JSLingo is and how it works, displayed before users start their first level.",
+        "details": "Create a welcoming landing page that:\n\n1. Introduces JSLingo as an interactive JavaScript learning platform\n2. Explains the learning approach (bite-sized coding challenges)\n3. Shows what users will learn (variables, functions, loops, arrays, etc.)\n4. Explains how the app works:\n   - Read the task description\n   - Write code in the editor\n   - Click 'Run Code' to test\n   - Get instant feedback\n   - Progress through 15 levels\n5. Include a prominent 'Start Learning' button\n6. Consider showing:\n   - Progress tracking feature\n   - Streak system\n   - Hint availability\n7. Store 'hasSeenWelcome' in localStorage to only show on first visit\n8. Add translations for all welcome page content\n9. Design should be engaging and encouraging for beginners",
+        "testStrategy": "1. Clear localStorage, reload app - verify landing page shows\n2. Click 'Start Learning' - verify navigates to Level 1\n3. Refresh - verify landing page doesn't show again\n4. Clear localStorage again - verify it shows once more\n5. Test on mobile viewport\n6. Verify all text uses t() translation function",
         "priority": "high",
         "dependencies": [],
         "status": "pending",
@@ -14,111 +14,270 @@
       },
       {
         "id": 2,
-        "title": "Implement Achievement Badge System",
-        "description": "Create an achievement system that awards badges for milestones like completing first level, achieving 5-streak, and finishing all levels.",
-        "details": "1. Define achievements data structure:\n```javascript\nconst ACHIEVEMENTS = [\n  { id: 'first_step', icon: 'Star', condition: (state) => state.completedLevels.size >= 1 },\n  { id: 'streak_5', icon: 'Flame', condition: (state) => state.maxStreak >= 5 },\n  { id: 'streak_10', icon: 'Zap', condition: (state) => state.maxStreak >= 10 },\n  { id: 'halfway', icon: 'Award', condition: (state) => state.completedLevels.size >= 8 },\n  { id: 'completionist', icon: 'Trophy', condition: (state) => state.completedLevels.size >= 15 },\n  { id: 'beginner_master', icon: 'GraduationCap', condition: (state) => [1,2,3,4,5].every(id => state.completedLevels.has(id)) }\n];\n```\n\n2. Add translations for each achievement title and description\n\n3. Add state for tracking:\n```javascript\nconst [unlockedAchievements, setUnlockedAchievements] = useState(new Set());\nconst [maxStreak, setMaxStreak] = useState(0);\nconst [showAchievementModal, setShowAchievementModal] = useState(null);\n```\n\n4. Create useEffect to check achievements after state changes and show notification modal when new achievement unlocked\n\n5. Add achievements display section in header showing unlocked badges with lucide-react icons\n\n6. Update localStorage schema to persist unlockedAchievements and maxStreak\n\n7. Create achievement notification modal with celebratory styling",
-        "testStrategy": "1. Complete first level - verify 'first_step' achievement unlocks\n2. Get 5 correct answers in a row - verify 'streak_5' unlocks\n3. Complete all levels - verify 'completionist' unlocks\n4. Refresh browser - verify achievements persist\n5. Test achievement modal displays correctly\n6. Verify duplicate achievements don't re-trigger notifications",
+        "title": "Review & Update Level 1: Hello World",
+        "description": "Review and improve Level 1 (Hello World) to ensure it properly introduces console.log() and doesn't assume prior knowledge.",
+        "details": "Assess and improve Level 1:\n\nCurrent state:\n- Title: Hello World\n- Task: Use console.log() to print 'Hello, World!'\n- Expected Output: 'Hello, World!'\n\nReview checklist:\n1. Does the description explain what console.log() is?\n2. Does it explain why we use it (seeing output)?\n3. Does it explain the syntax (parentheses, quotes for strings)?\n4. Is the task clear for someone who has never coded?\n5. Is the hint helpful without giving away the answer?\n6. Does the starter code comment guide without confusing?\n\nConsider adding:\n- Brief explanation of what JavaScript is\n- What 'printing' or 'logging' means\n- Why quotes are needed around text\n- That semicolons are optional but good practice\n\nThis is the foundation - users should feel confident after completing it.",
+        "testStrategy": "1. Read through all level content as a complete beginner\n2. Verify description explains the concept clearly\n3. Test that hint helps without spoiling\n4. Ensure solution matches expected output\n5. Verify translations are updated",
         "priority": "high",
-        "dependencies": [
-          1
-        ],
+        "dependencies": [1],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 3,
-        "title": "Add 5 New Intermediate Levels (Arrow Functions)",
-        "description": "Create 5 new levels (16-20) introducing arrow function syntax, building progressively from basic arrow functions to arrow functions with array methods.",
-        "details": "1. Add Level 16: Basic Arrow Function\n```javascript\n{\n  id: 16,\n  title: 'Arrow Functions',\n  difficulty: 'intermediate',\n  task: 'Convert the function below to an arrow function and call it',\n  starterCode: '// Convert to arrow function\\nfunction double(x) { return x * 2; }\\n// Call it with 5',\n  expectedOutput: '10',\n  hint: 'Arrow syntax: const name = (params) => expression',\n  solution: 'const double = (x) => x * 2;\\nconsole.log(double(5));'\n}\n```\n\n2. Add Level 17: Arrow Function with Multiple Params\n- Task: Create arrow function that adds two numbers\n- expectedOutput: '15'\n\n3. Add Level 18: Arrow Function with Block Body\n- Task: Create arrow function with if statement inside\n- Teaches when to use {} and return\n\n4. Add Level 19: Arrow Functions with Arrays (forEach)\n- Task: Use forEach with arrow function to log each element\n- Introduces callback pattern\n\n5. Add Level 20: Arrow Function Shorthand\n- Task: Use implicit return with object literal\n- Teaches wrapping in parentheses\n\n6. Add all translations for new level content\n\n7. Update level unlocking logic to handle 20 levels",
-        "testStrategy": "1. Play through all 5 new levels in sequence\n2. Verify each level's expected output matches solution\n3. Test hint content is helpful and accurate\n4. Verify levels 16-20 are locked until level 15 complete\n5. Test progress saves correctly for new levels\n6. Verify difficulty badge shows 'intermediate' for all new levels",
+        "title": "Review & Update Level 2: Variables (Numbers)",
+        "description": "Review and improve Level 2 to ensure it properly teaches variables and the 'let' keyword, building on Level 1's console.log knowledge.",
+        "details": "Assess and improve Level 2:\n\nCurrent state:\n- Title: Variables (Numbers)\n- Task: Create a variable called 'age' with value 25\n- Expected Output: '25'\n\nReview checklist:\n1. Does it explain what a variable is (named container for data)?\n2. Does it explain 'let' keyword and why we use it?\n3. Does it build on Level 1 by using console.log to display?\n4. Is the variable name 'age' relatable and clear?\n5. Does it explain that numbers don't need quotes?\n\nEnsure progression:\n- Level 1 taught: console.log() and strings\n- Level 2 should: introduce variables + numbers, reinforce console.log\n\nConsider adding:\n- Explanation of why variables are useful\n- Difference between 'let' and 'const' (briefly)\n- Why we don't use quotes around numbers",
+        "testStrategy": "1. Verify builds naturally on Level 1 concepts\n2. Check description teaches variables clearly\n3. Ensure hint reinforces both variable and logging concepts\n4. Test solution works correctly",
         "priority": "high",
-        "dependencies": [
-          1
-        ],
+        "dependencies": [2],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 4,
-        "title": "Add 5 New Levels for Array Methods (map, filter, reduce)",
-        "description": "Create 5 new levels (21-25) teaching modern array methods including map, filter, reduce, and combining them.",
-        "details": "1. Add Level 21: Array.map() Basics\n```javascript\n{\n  id: 21,\n  title: 'Array Map',\n  difficulty: 'intermediate',\n  task: 'Use map() to double each number in the array',\n  starterCode: 'const numbers = [1, 2, 3, 4, 5];\\n// Use map to double each number and log the result',\n  expectedOutput: '2,4,6,8,10',\n  hint: 'array.map(item => transform(item)) returns a new array',\n  solution: 'const numbers = [1, 2, 3, 4, 5];\\nconsole.log(numbers.map(n => n * 2).join(\",\"));'\n}\n```\n\n2. Add Level 22: Array.filter() Basics\n- Task: Filter array to keep only even numbers\n- expectedOutput: '2,4'\n\n3. Add Level 23: Array.reduce() Introduction\n- Task: Sum all numbers in array using reduce\n- expectedOutput: '15'\n- Includes detailed hint about accumulator pattern\n\n4. Add Level 24: Chaining map and filter\n- Task: Filter evens, then double them\n- Teaches method chaining\n\n5. Add Level 25: Array.find() and Array.includes()\n- Task: Find first number greater than 3\n- expectedOutput: '4'\n\n6. Update TRANSLATIONS with all new content\n\n7. Set difficulty to 'intermediate' for all",
-        "testStrategy": "1. Complete levels 16-20 first to unlock\n2. Play through all 5 array method levels\n3. Test various correct solutions work (AI validation flexibility)\n4. Verify solutions match expected output\n5. Test hints provide useful guidance\n6. Check progress persistence includes new levels",
+        "title": "Review & Update Level 3: String Variables",
+        "description": "Review and improve Level 3 to ensure it properly teaches string variables and template literals, building on previous levels.",
+        "details": "Assess and improve Level 3:\n\nCurrent state:\n- Title: String Variables\n- Task: Create variable 'name' with value 'JavaScript'\n- Expected Output: 'Hello, JavaScript!'\n- Uses template literals: `Hello, ${name}!`\n\nReview checklist:\n1. Does it explain strings vs numbers?\n2. Does it introduce template literals clearly?\n3. Is the ${} syntax explained?\n4. Does it build on variable knowledge from Level 2?\n\nCONCERN: Template literals might be too advanced this early\nOptions:\n- Keep but explain thoroughly\n- Simplify to string concatenation first\n- Keep template literals but make explanation very clear\n\nEnsure progression:\n- Level 1: console.log, strings in quotes\n- Level 2: variables with numbers\n- Level 3: variables with strings + combining strings",
+        "testStrategy": "1. Verify description explains strings clearly\n2. Check template literal syntax is well explained\n3. Ensure builds on Levels 1-2\n4. Test as a beginner - is it too confusing?",
         "priority": "high",
-        "dependencies": [
-          3
-        ],
+        "dependencies": [3],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 5,
-        "title": "Implement Practice Mode for Completed Levels",
-        "description": "Add a practice mode that generates variations of completed levels for additional practice without affecting progress.",
-        "details": "1. Add practice variations to level data:\n```javascript\n{\n  id: 1,\n  // ... existing fields\n  practiceVariations: [\n    { task: 'Log \"Goodbye World\" instead', expectedOutput: 'Goodbye World' },\n    { task: 'Log your name', expectedOutput: null, aiOnly: true }\n  ]\n}\n```\n\n2. Add state for practice mode:\n```javascript\nconst [isPracticeMode, setIsPracticeMode] = useState(false);\nconst [currentVariation, setCurrentVariation] = useState(0);\n```\n\n3. Add 'Practice' button to completed levels (only shows when level is complete)\n\n4. Create practice mode UI:\n- Different header color (purple theme instead of blue)\n- Shows variation number (e.g., 'Practice 1 of 3')\n- 'Next Variation' button\n- 'Exit Practice' button\n- Streak does NOT increment in practice mode\n\n5. Add translations for practice mode UI elements\n\n6. Practice mode validation:\n- If expectedOutput provided, use normal comparison\n- If aiOnly: true, only use AI validation\n- Show encouraging feedback regardless of streak impact",
-        "testStrategy": "1. Complete Level 1, verify Practice button appears\n2. Enter practice mode, verify UI changes to purple theme\n3. Complete practice variation, verify streak unchanged\n4. Test navigation between variations\n5. Exit practice mode, verify returns to normal level view\n6. Verify practice not available for incomplete levels",
-        "priority": "medium",
-        "dependencies": [
-          1,
-          2
-        ],
+        "title": "Review & Update Level 4: User Input",
+        "description": "Review and improve Level 4 to ensure the 'User Input' concept is appropriate and builds on prior levels.",
+        "details": "Assess and improve Level 4:\n\nCurrent state:\n- Title: User Input\n- Task: Create color variable, output 'Your favorite color is blue'\n- Expected Output: 'Your favorite color is blue'\n\nCONCERN: This level is confusingly named 'User Input' but doesn't actually take user input - it just uses another template literal.\n\nOptions:\n1. Rename to something more accurate ('More Template Literals', 'String Interpolation')\n2. Change the exercise to be meaningfully different from Level 3\n3. Replace with a different concept entirely\n\nThis level feels redundant with Level 3. Consider:\n- Teaching string concatenation with + operator\n- Teaching multiple variables in one template literal\n- Moving to a different concept (boolean variables?)\n\nEnsure meaningful progression from Level 3.",
+        "testStrategy": "1. Assess if this level teaches something new\n2. Verify it's not too similar to Level 3\n3. Ensure title matches actual content\n4. Test learning progression makes sense",
+        "priority": "high",
+        "dependencies": [4],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 6,
-        "title": "Add 'Why This Works' Explanations",
-        "description": "Display educational explanations after correct solutions to reinforce learning concepts.",
-        "details": "1. Add 'explanation' field to each level:\n```javascript\n{\n  id: 1,\n  // ... existing fields\n  explanation: 'console.log() is JavaScript\\'s way of printing output. The text inside the parentheses (called an argument) gets displayed. Strings must be wrapped in quotes - single or double both work!'\n}\n```\n\n2. Write explanations for all 15 existing levels covering:\n- What the concept does\n- Why it's useful\n- Common variations/alternatives\n- Real-world use cases (brief)\n\n3. Update success feedback display:\n```javascript\n{feedback?.type === 'success' && (\n  <div className=\"mt-4 bg-blue-50 p-4 rounded-lg\">\n    <h4 className=\"font-semibold text-blue-800 flex items-center gap-2\">\n      <Lightbulb className=\"w-5 h-5\" />\n      {t('explanation.title')}\n    </h4>\n    <p className=\"text-blue-700 mt-2\">{levels[currentLevel - 1].explanation}</p>\n  </div>\n)}\n```\n\n4. Add toggle to show/hide explanation (default: shown)\n\n5. Add translations for explanation section labels",
-        "testStrategy": "1. Complete Level 1, verify explanation appears below success message\n2. Check explanations for levels 1-15 are accurate and helpful\n3. Test explanation toggle hides/shows content\n4. Verify explanation doesn't show on error feedback\n5. Test explanation text is readable on mobile",
-        "priority": "medium",
-        "dependencies": [],
+        "title": "Review & Update Level 5: Basic Math",
+        "description": "Review and improve Level 5 to ensure it properly teaches arithmetic operators, building on variable knowledge.",
+        "details": "Assess and improve Level 5:\n\nCurrent state:\n- Title: Basic Math\n- Task: Output the sum of 15 + 27\n- Expected Output: '42'\n- Solution: console.log(15 + 27);\n\nReview checklist:\n1. Does it explain arithmetic operators (+, -, *, /)?\n2. Does it show that JS can do calculations?\n3. Is it clear you can put expressions inside console.log?\n\nCONCERN: This level doesn't use variables - seems like a step backward\n\nConsider enhancing:\n- Store result in variable first, then log\n- Show multiple operators\n- Combine with previous variable knowledge\n\nSuggested improvement:\n```javascript\nlet a = 15;\nlet b = 27;\nlet sum = a + b;\nconsole.log(sum);\n```\n\nThis reinforces variables while teaching math.",
+        "testStrategy": "1. Verify arithmetic concepts are explained\n2. Check if it builds on or ignores variable knowledge\n3. Ensure progression is logical\n4. Test solution works correctly",
+        "priority": "high",
+        "dependencies": [5],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 7,
-        "title": "Create XP/Points System",
-        "description": "Implement an experience points system that awards points for completing levels based on difficulty and tracks total XP.",
-        "details": "1. Define XP values by difficulty:\n```javascript\nconst XP_VALUES = {\n  beginner: 10,\n  easy: 20,\n  intermediate: 30,\n  advanced: 50\n};\n```\n\n2. Add XP state and persistence:\n```javascript\nconst [totalXP, setTotalXP] = useState(0);\nconst [levelXPAwarded, setLevelXPAwarded] = useState(new Set());\n```\n\n3. Award XP on level completion (only first time):\n```javascript\nconst awardXP = (levelId) => {\n  if (levelXPAwarded.has(levelId)) return;\n  const level = levels.find(l => l.id === levelId);\n  const xp = XP_VALUES[level.difficulty];\n  setTotalXP(prev => prev + xp);\n  setLevelXPAwarded(new Set([...levelXPAwarded, levelId]));\n};\n```\n\n4. Display XP in header:\n```javascript\n<div className=\"flex items-center gap-2 text-yellow-500\">\n  <Star className=\"w-5 h-5\" />\n  <span className=\"font-bold\">{totalXP} XP</span>\n</div>\n```\n\n5. Show XP gained animation on level complete:\n- '+10 XP' floating text that fades up\n- Brief celebration effect\n\n6. Add XP-based achievements to achievement system:\n- 'First Points' (10 XP)\n- 'Century' (100 XP)\n- 'XP Master' (500 XP)\n\n7. Update localStorage schema",
-        "testStrategy": "1. Complete beginner level, verify +10 XP awarded\n2. Complete intermediate level, verify +30 XP awarded\n3. Repeat same level, verify no duplicate XP\n4. Refresh browser, verify XP persists\n5. Test XP animation displays correctly\n6. Verify XP-based achievements unlock at thresholds",
-        "priority": "medium",
-        "dependencies": [
-          1,
-          2
-        ],
+        "title": "Review & Update Level 6: Conditionals",
+        "description": "Review and improve Level 6 to ensure it properly teaches if statements, building on all prior concepts.",
+        "details": "Assess and improve Level 6:\n\nCurrent state:\n- Title: Conditionals\n- Task: Check if 10 > 5, print message\n- Expected Output: 'Yes, 10 is greater than 5'\n\nReview checklist:\n1. Does it explain what conditionals are?\n2. Does it explain the if statement syntax?\n3. Does it explain comparison operators (>, <, ===)?\n4. Does it explain curly braces for code blocks?\n5. Does it explain boolean expressions?\n\nThis is a BIG jump in complexity. Ensure:\n- Thorough explanation of if syntax\n- Explain what happens when condition is false\n- Consider introducing else in same or next level\n- Make sure curly braces are explained\n\nBuild on previous:\n- Use variables in the condition\n- Combine with math knowledge",
+        "testStrategy": "1. Verify if statement syntax is clearly explained\n2. Check that boolean logic is introduced\n3. Ensure not too big of a jump from Level 5\n4. Test as beginner - is the concept clear?",
+        "priority": "high",
+        "dependencies": [6],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 8,
-        "title": "Implement Progress Export/Import",
-        "description": "Add ability to export progress as JSON file and import to restore progress on different devices.",
-        "details": "1. Create export function:\n```javascript\nconst exportProgress = () => {\n  const progress = {\n    version: 1,\n    exportDate: new Date().toISOString(),\n    completedLevels: [...completedLevels],\n    streak: streak,\n    maxStreak: maxStreak,\n    currentLevel: currentLevel,\n    totalXP: totalXP,\n    unlockedAchievements: [...unlockedAchievements]\n  };\n  const blob = new Blob([JSON.stringify(progress, null, 2)], { type: 'application/json' });\n  const url = URL.createObjectURL(blob);\n  const a = document.createElement('a');\n  a.href = url;\n  a.download = `jslingo-progress-${new Date().toISOString().split('T')[0]}.json`;\n  a.click();\n};\n```\n\n2. Create import function:\n```javascript\nconst importProgress = (event) => {\n  const file = event.target.files[0];\n  const reader = new FileReader();\n  reader.onload = (e) => {\n    try {\n      const data = JSON.parse(e.target.result);\n      // Validate schema version\n      if (data.version !== 1) throw new Error('Incompatible version');\n      // Restore state\n      setCompletedLevels(new Set(data.completedLevels));\n      setStreak(data.streak || 0);\n      // ... restore other fields\n    } catch (err) {\n      setFeedback({ type: 'error', message: t('import.error') });\n    }\n  };\n  reader.readAsText(file);\n};\n```\n\n3. Add UI in settings/menu area:\n- Export button with Download icon\n- Import button (hidden file input) with Upload icon\n- Confirmation modal before import (warns about overwriting)\n\n4. Add translations for import/export UI",
-        "testStrategy": "1. Click export, verify JSON file downloads\n2. Open exported file, verify all progress data present\n3. Reset progress, then import file, verify restoration\n4. Try importing invalid file, verify error message\n5. Test import with missing fields uses defaults\n6. Verify import confirmation modal prevents accidental overwrites",
-        "priority": "medium",
-        "dependencies": [
-          2,
-          7
-        ],
+        "title": "Review & Update Level 7: For Loops",
+        "description": "Review and improve Level 7 to ensure it properly teaches for loops, building on conditional knowledge.",
+        "details": "Assess and improve Level 7:\n\nCurrent state:\n- Title: For Loops\n- Task: Print 1, 2, 3 using a for loop\n- Expected Output: '1\\n2\\n3'\n\nReview checklist:\n1. Does it explain what loops are (repeating code)?\n2. Does it break down the for loop syntax:\n   - Initialization (let i = 1)\n   - Condition (i <= 3)\n   - Increment (i++)\n3. Does it explain i++ shorthand?\n4. Does it connect to conditionals (the middle part)?\n\nThis is another complex concept. Ensure:\n- Clear explanation of each part of for loop\n- Why loops are useful (don't repeat yourself)\n- What happens step by step\n\nConsider:\n- Adding a visual or step-by-step walkthrough\n- Explaining common loop patterns\n- Connecting to previous conditional knowledge",
+        "testStrategy": "1. Verify for loop syntax is broken down clearly\n2. Check each part (init, condition, increment) is explained\n3. Ensure builds on conditional knowledge\n4. Test solution produces correct output",
+        "priority": "high",
+        "dependencies": [7],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 9,
-        "title": "Add Common Mistakes Database with Targeted Hints",
-        "description": "Create a system that detects common coding mistakes and provides specific, helpful error messages instead of generic errors.",
-        "details": "1. Define common mistakes patterns:\n```javascript\nconst COMMON_MISTAKES = [\n  {\n    pattern: /console\\.Log\\(/i,\n    wrongPattern: true,\n    message: 'JavaScript is case-sensitive! Use console.log() with lowercase \"l\"'\n  },\n  {\n    pattern: /console\\.log\\([^'\"][^)]*[^'\"]\\)/,\n    levelHint: [1, 3, 4], // Applicable to string levels\n    message: 'Strings need quotes! Wrap your text in \"double\" or \\'single\\' quotes'\n  },\n  {\n    pattern: /=(?!=)/,\n    checkContext: (code) => code.includes('if') && !code.includes('=='),\n    message: 'In conditions, use == or === for comparison, not = (assignment)'\n  },\n  {\n    pattern: /for\\s*\\([^;]*;[^;]*;[^)]*\\)\\s*;/,\n    message: 'Oops! You have a semicolon right after your for loop - the loop body won\\'t execute'\n  },\n  {\n    pattern: /function\\s+\\w+\\s*\\([^)]*\\)\\s*[^{]/,\n    message: 'Functions need curly braces {} around their body'\n  }\n];\n```\n\n2. Create mistake detection function:\n```javascript\nconst detectCommonMistake = (code, levelId) => {\n  for (const mistake of COMMON_MISTAKES) {\n    if (mistake.levelHint && !mistake.levelHint.includes(levelId)) continue;\n    if (mistake.pattern.test(code)) {\n      if (mistake.checkContext && !mistake.checkContext(code)) continue;\n      return mistake.message;\n    }\n  }\n  return null;\n};\n```\n\n3. Integrate into code execution:\n- Run mistake detection before eval\n- Show targeted hint in feedback if mistake detected\n- Still show actual error if no common mistake matches\n\n4. Add 15-20 common JavaScript beginner mistakes\n\n5. Track which mistakes user makes for potential analytics",
-        "testStrategy": "1. Type 'console.Log(\"test\")' - verify case-sensitivity hint\n2. Type 'console.log(hello)' without quotes - verify string hint\n3. Type 'if (x = 5)' - verify assignment vs comparison hint\n4. Test actual runtime errors still display correctly\n5. Verify hints don't trigger false positives on correct code",
-        "priority": "low",
-        "dependencies": [
-          6
-        ],
+        "title": "Review & Update Level 8: While Loops",
+        "description": "Review and improve Level 8 to ensure it properly teaches while loops as an alternative to for loops.",
+        "details": "Assess and improve Level 8:\n\nCurrent state:\n- Title: While Loops\n- Task: Print 1, 2, 3 using a while loop\n- Expected Output: '1\\n2\\n3'\n\nReview checklist:\n1. Does it explain how while differs from for?\n2. Does it explain the while syntax?\n3. Does it warn about infinite loops?\n4. Does it explain when to use while vs for?\n\nEnsure progression:\n- Level 7 taught for loops\n- Level 8 should show while as alternative\n- Explain: while is better when you don't know iterations in advance\n\nCONCERN: Same output as Level 7 might be confusing\n\nConsider:\n- Different example that showcases while better\n- Explain the mental model difference\n- Warn about forgetting to increment (infinite loop)",
+        "testStrategy": "1. Verify while loop syntax is explained\n2. Check comparison to for loop is clear\n3. Ensure infinite loop danger is mentioned\n4. Test solution works correctly",
+        "priority": "high",
+        "dependencies": [8],
         "status": "pending",
         "subtasks": []
       },
       {
         "id": 10,
+        "title": "Review & Update Level 9: Arrays Basics",
+        "description": "Review and improve Level 9 to ensure it properly introduces arrays and indexing.",
+        "details": "Assess and improve Level 9:\n\nCurrent state:\n- Title: Lists Basics (should be 'Arrays')\n- Task: Create fruits array, access second element\n- Expected Output: 'banana'\n\nReview checklist:\n1. Does it explain what arrays are?\n2. Does it explain the [] syntax?\n3. Does it explain zero-based indexing (CRITICAL)?\n4. Why is index 1 the second item?\n\nZero-based indexing is a major stumbling block!\n\nEnsure:\n- Very clear explanation of indexing starting at 0\n- Visual representation if possible\n- fruits[0] = 'apple', fruits[1] = 'banana', etc.\n\nConsider:\n- Renaming from 'Lists' to 'Arrays' (JS terminology)\n- Adding more context about why arrays exist\n- Connecting to loops (preview: iterate over arrays)",
+        "testStrategy": "1. Verify zero-indexing is VERY clearly explained\n2. Check array syntax is shown properly\n3. Ensure title matches JS terminology\n4. Test as beginner - is indexing clear?",
+        "priority": "high",
+        "dependencies": [9],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 11,
+        "title": "Review & Update Level 10: Array Operations",
+        "description": "Review and improve Level 10 to ensure it properly teaches array methods like push().",
+        "details": "Assess and improve Level 10:\n\nCurrent state:\n- Title: List Operations (should be 'Array Methods')\n- Task: Add 4 to array [1,2,3]\n- Expected Output: '[1,2,3,4]'\n\nReview checklist:\n1. Does it introduce the concept of methods?\n2. Does it explain .push() syntax?\n3. Does it explain that push modifies the original array?\n4. Does it mention other common methods?\n\nThis is first introduction to methods!\n\nEnsure:\n- Explain what a method is (function attached to object)\n- Explain the dot notation\n- Mention push adds to END of array\n- Preview other methods (pop, shift, unshift)\n\nConsider:\n- Renaming to 'Array Methods'\n- Explaining return values\n- Connecting to logging arrays",
+        "testStrategy": "1. Verify method concept is introduced\n2. Check push() is explained clearly\n3. Ensure dot notation is explained\n4. Test solution produces correct output format",
+        "priority": "high",
+        "dependencies": [10],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 12,
+        "title": "Review & Update Level 11: Functions Basics",
+        "description": "Review and improve Level 11 to ensure it properly introduces function declaration and calling.",
+        "details": "Assess and improve Level 11:\n\nCurrent state:\n- Title: Functions Basics\n- Task: Create greet() function that logs 'Hello!'\n- Expected Output: 'Hello!'\n\nReview checklist:\n1. Does it explain what functions are (reusable code)?\n2. Does it explain the function keyword?\n3. Does it explain function naming conventions?\n4. Does it explain calling vs defining?\n5. Does it explain the parentheses?\n\nFunctions are a MAJOR concept!\n\nEnsure:\n- Clear distinction between defining and calling\n- Explain why functions are useful (DRY)\n- Simple example that's easy to understand\n- Mention that functions can be called multiple times\n\nMake sure solution requires both:\n1. Defining the function\n2. Calling the function",
+        "testStrategy": "1. Verify function concept is well explained\n2. Check define vs call distinction is clear\n3. Ensure syntax is broken down\n4. Test solution includes both definition and call",
+        "priority": "high",
+        "dependencies": [11],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 13,
+        "title": "Review & Update Level 12: Functions with Parameters",
+        "description": "Review and improve Level 12 to ensure it properly teaches function parameters and arguments.",
+        "details": "Assess and improve Level 12:\n\nCurrent state:\n- Title: Functions with Parameters\n- Task: Create sayHello(name) that logs greeting\n- Expected Output: 'Hello, World!'\n\nReview checklist:\n1. Does it explain what parameters are?\n2. Does it explain the difference between parameters and arguments?\n3. Does it build on Level 11's function knowledge?\n4. Does it connect to template literals from Level 3?\n\nEnsure:\n- Clear explanation of parameter = placeholder\n- Clear explanation of argument = actual value\n- Show how data flows into the function\n- Reinforce template literal syntax\n\nConsider:\n- Multiple parameters in future level\n- Default parameters (maybe too advanced)\n- Return values (save for separate level?)",
+        "testStrategy": "1. Verify parameter concept is clear\n2. Check parameter vs argument distinction\n3. Ensure builds on Level 11\n4. Test solution works with 'World' argument",
+        "priority": "high",
+        "dependencies": [12],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 14,
+        "title": "Review & Update Level 13: Objects",
+        "description": "Review and improve Level 13 to ensure it properly introduces JavaScript objects.",
+        "details": "Assess and improve Level 13:\n\nCurrent state:\n- Title: Dictionaries (should be 'Objects')\n- Task: Create person object, access name property\n- Expected Output: 'Alice'\n\nReview checklist:\n1. Does it explain what objects are?\n2. Does it explain key-value pairs?\n3. Does it explain property access with dot notation?\n4. Does it connect to arrays (both store data)?\n\nCRITICAL: Rename from 'Dictionaries' to 'Objects'!\n- 'Dictionary' is Python terminology\n- JavaScript uses 'Object'\n\nEnsure:\n- Explain {} syntax for objects\n- Explain key: value format\n- Show both dot notation and bracket notation\n- Compare to arrays (indexed vs named)\n\nConsider:\n- Nested objects (maybe too advanced)\n- Methods on objects (functions as values)",
+        "testStrategy": "1. Verify renamed to 'Objects' not 'Dictionaries'\n2. Check object syntax is explained\n3. Ensure dot notation access is clear\n4. Test solution works correctly",
+        "priority": "high",
+        "dependencies": [13],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 15,
+        "title": "Review & Update Level 14: String Methods",
+        "description": "Review and improve Level 14 to ensure it properly teaches string methods, building on method knowledge from arrays.",
+        "details": "Assess and improve Level 14:\n\nCurrent state:\n- Title: String Methods\n- Task: Convert text to uppercase\n- Expected Output: 'JAVASCRIPT PROGRAMMING'\n\nReview checklist:\n1. Does it connect to array methods (Level 10)?\n2. Does it explain strings have methods too?\n3. Does it explain toUpperCase() specifically?\n4. Does it mention other useful string methods?\n\nEnsure:\n- Connect to method concept from Level 10\n- Explain strings are also objects with methods\n- Show that toUpperCase() returns a new string\n- Mention toLowerCase(), trim(), split(), etc.\n\nGood placement - reinforces methods concept on different data type.",
+        "testStrategy": "1. Verify connection to array methods is made\n2. Check toUpperCase() is explained\n3. Ensure other methods are mentioned\n4. Test solution works correctly",
+        "priority": "high",
+        "dependencies": [14],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 16,
+        "title": "Review & Update Level 15: Final Challenge",
+        "description": "Review and improve Level 15 to ensure it's a comprehensive final challenge that combines multiple concepts.",
+        "details": "Assess and improve Level 15:\n\nCurrent state:\n- Title: Final Challenge\n- Task: Double each number in array and print\n- Expected Output: '2\\n4\\n6\\n8\\n10'\n- Solution uses for...of loop\n\nReview checklist:\n1. Does it combine multiple learned concepts?\n2. Is it challenging but achievable?\n3. Does it introduce for...of loop?\n4. Is it satisfying as a finale?\n\nCurrent solution uses for...of which was never taught!\n\nOptions:\n1. Add a level before this teaching for...of\n2. Change solution to use regular for loop\n3. Accept both for and for...of in validation\n\nEnsure finale:\n- Combines arrays + loops + math\n- Feels like an accomplishment\n- Could have multiple valid solutions\n- Consider celebratory message on completion",
+        "testStrategy": "1. Verify challenge combines multiple concepts\n2. Check if for...of needs to be taught first\n3. Ensure multiple solutions work\n4. Test completion feels rewarding",
+        "priority": "high",
+        "dependencies": [15],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 17,
+        "title": "Add Difficulty Ratings to Existing Levels",
+        "description": "Extend the level data model to include difficulty ratings and display them in the UI for all 15 existing levels.",
+        "details": "1. Add a 'difficulty' property to each level object in the levels array with values: 'beginner' (levels 1-5), 'easy' (levels 6-10), 'intermediate' (levels 11-15)\n\n2. Update the level data structure:\n```javascript\n{\n  id: 1,\n  title: 'Hello World',\n  difficulty: 'beginner', // NEW FIELD\n  // ... existing fields\n}\n```\n\n3. Create difficulty badge component inline:\n```javascript\nconst DifficultyBadge = ({ difficulty }) => {\n  const colors = {\n    beginner: 'bg-green-100 text-green-800',\n    easy: 'bg-blue-100 text-blue-800',\n    intermediate: 'bg-yellow-100 text-yellow-800',\n    advanced: 'bg-red-100 text-red-800'\n  };\n  return (\n    <span className={`px-2 py-1 rounded-full text-xs font-medium ${colors[difficulty]}`}>\n      {t(`difficulty.${difficulty}`)}\n    </span>\n  );\n};\n```\n\n4. Add translations for difficulty labels to TRANSLATIONS object:\n```javascript\n'difficulty.beginner': 'Beginner',\n'difficulty.easy': 'Easy',\n'difficulty.intermediate': 'Intermediate',\n'difficulty.advanced': 'Advanced'\n```\n\n5. Display badge in level header and level selector modal cards",
+        "testStrategy": "1. Verify all 15 levels have difficulty property set\n2. Check badge renders with correct color for each difficulty tier\n3. Test translations work correctly\n4. Verify badge displays in both main view and level selector modal\n5. Test responsive layout with badge doesn't break on mobile",
+        "priority": "low",
+        "dependencies": [16],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 18,
+        "title": "Implement Achievement Badge System",
+        "description": "Create an achievement system that awards badges for milestones like completing first level, achieving 5-streak, and finishing all levels.",
+        "details": "1. Define achievements data structure:\n```javascript\nconst ACHIEVEMENTS = [\n  { id: 'first_step', icon: 'Star', condition: (state) => state.completedLevels.size >= 1 },\n  { id: 'streak_5', icon: 'Flame', condition: (state) => state.maxStreak >= 5 },\n  { id: 'streak_10', icon: 'Zap', condition: (state) => state.maxStreak >= 10 },\n  { id: 'halfway', icon: 'Award', condition: (state) => state.completedLevels.size >= 8 },\n  { id: 'completionist', icon: 'Trophy', condition: (state) => state.completedLevels.size >= 15 },\n  { id: 'beginner_master', icon: 'GraduationCap', condition: (state) => [1,2,3,4,5].every(id => state.completedLevels.has(id)) }\n];\n```\n\n2. Add translations for each achievement title and description\n\n3. Add state for tracking:\n```javascript\nconst [unlockedAchievements, setUnlockedAchievements] = useState(new Set());\nconst [maxStreak, setMaxStreak] = useState(0);\nconst [showAchievementModal, setShowAchievementModal] = useState(null);\n```\n\n4. Create useEffect to check achievements after state changes and show notification modal when new achievement unlocked\n\n5. Add achievements display section in header showing unlocked badges with lucide-react icons\n\n6. Update localStorage schema to persist unlockedAchievements and maxStreak\n\n7. Create achievement notification modal with celebratory styling",
+        "testStrategy": "1. Complete first level - verify 'first_step' achievement unlocks\n2. Get 5 correct answers in a row - verify 'streak_5' unlocks\n3. Complete all levels - verify 'completionist' unlocks\n4. Refresh browser - verify achievements persist\n5. Test achievement modal displays correctly\n6. Verify duplicate achievements don't re-trigger notifications",
+        "priority": "low",
+        "dependencies": [17],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 19,
+        "title": "Add 5 New Intermediate Levels (Arrow Functions)",
+        "description": "Create 5 new levels (16-20) introducing arrow function syntax, building progressively from basic arrow functions to arrow functions with array methods.",
+        "details": "1. Add Level 16: Basic Arrow Function\n```javascript\n{\n  id: 16,\n  title: 'Arrow Functions',\n  difficulty: 'intermediate',\n  task: 'Convert the function below to an arrow function and call it',\n  starterCode: '// Convert to arrow function\\nfunction double(x) { return x * 2; }\\n// Call it with 5',\n  expectedOutput: '10',\n  hint: 'Arrow syntax: const name = (params) => expression',\n  solution: 'const double = (x) => x * 2;\\nconsole.log(double(5));'\n}\n```\n\n2. Add Level 17: Arrow Function with Multiple Params\n- Task: Create arrow function that adds two numbers\n- expectedOutput: '15'\n\n3. Add Level 18: Arrow Function with Block Body\n- Task: Create arrow function with if statement inside\n- Teaches when to use {} and return\n\n4. Add Level 19: Arrow Functions with Arrays (forEach)\n- Task: Use forEach with arrow function to log each element\n- Introduces callback pattern\n\n5. Add Level 20: Arrow Function Shorthand\n- Task: Use implicit return with object literal\n- Teaches wrapping in parentheses\n\n6. Add all translations for new level content\n\n7. Update level unlocking logic to handle 20 levels",
+        "testStrategy": "1. Play through all 5 new levels in sequence\n2. Verify each level's expected output matches solution\n3. Test hint content is helpful and accurate\n4. Verify levels 16-20 are locked until level 15 complete\n5. Test progress saves correctly for new levels\n6. Verify difficulty badge shows 'intermediate' for all new levels",
+        "priority": "low",
+        "dependencies": [16],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 20,
+        "title": "Add 5 New Levels for Array Methods (map, filter, reduce)",
+        "description": "Create 5 new levels (21-25) teaching modern array methods including map, filter, reduce, and combining them.",
+        "details": "1. Add Level 21: Array.map() Basics\n```javascript\n{\n  id: 21,\n  title: 'Array Map',\n  difficulty: 'intermediate',\n  task: 'Use map() to double each number in the array',\n  starterCode: 'const numbers = [1, 2, 3, 4, 5];\\n// Use map to double each number and log the result',\n  expectedOutput: '2,4,6,8,10',\n  hint: 'array.map(item => transform(item)) returns a new array',\n  solution: 'const numbers = [1, 2, 3, 4, 5];\\nconsole.log(numbers.map(n => n * 2).join(\",\"));'\n}\n```\n\n2. Add Level 22: Array.filter() Basics\n- Task: Filter array to keep only even numbers\n- expectedOutput: '2,4'\n\n3. Add Level 23: Array.reduce() Introduction\n- Task: Sum all numbers in array using reduce\n- expectedOutput: '15'\n- Includes detailed hint about accumulator pattern\n\n4. Add Level 24: Chaining map and filter\n- Task: Filter evens, then double them\n- Teaches method chaining\n\n5. Add Level 25: Array.find() and Array.includes()\n- Task: Find first number greater than 3\n- expectedOutput: '4'\n\n6. Update TRANSLATIONS with all new content\n\n7. Set difficulty to 'intermediate' for all",
+        "testStrategy": "1. Complete levels 16-20 first to unlock\n2. Play through all 5 array method levels\n3. Test various correct solutions work (AI validation flexibility)\n4. Verify solutions match expected output\n5. Test hints provide useful guidance\n6. Check progress persistence includes new levels",
+        "priority": "low",
+        "dependencies": [19],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 21,
+        "title": "Implement Practice Mode for Completed Levels",
+        "description": "Add a practice mode that generates variations of completed levels for additional practice without affecting progress.",
+        "details": "1. Add practice variations to level data:\n```javascript\n{\n  id: 1,\n  // ... existing fields\n  practiceVariations: [\n    { task: 'Log \"Goodbye World\" instead', expectedOutput: 'Goodbye World' },\n    { task: 'Log your name', expectedOutput: null, aiOnly: true }\n  ]\n}\n```\n\n2. Add state for practice mode:\n```javascript\nconst [isPracticeMode, setIsPracticeMode] = useState(false);\nconst [currentVariation, setCurrentVariation] = useState(0);\n```\n\n3. Add 'Practice' button to completed levels (only shows when level is complete)\n\n4. Create practice mode UI:\n- Different header color (purple theme instead of blue)\n- Shows variation number (e.g., 'Practice 1 of 3')\n- 'Next Variation' button\n- 'Exit Practice' button\n- Streak does NOT increment in practice mode\n\n5. Add translations for practice mode UI elements\n\n6. Practice mode validation:\n- If expectedOutput provided, use normal comparison\n- If aiOnly: true, only use AI validation\n- Show encouraging feedback regardless of streak impact",
+        "testStrategy": "1. Complete Level 1, verify Practice button appears\n2. Enter practice mode, verify UI changes to purple theme\n3. Complete practice variation, verify streak unchanged\n4. Test navigation between variations\n5. Exit practice mode, verify returns to normal level view\n6. Verify practice not available for incomplete levels",
+        "priority": "low",
+        "dependencies": [17, 18],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 22,
+        "title": "Add 'Why This Works' Explanations",
+        "description": "Display educational explanations after correct solutions to reinforce learning concepts.",
+        "details": "1. Add 'explanation' field to each level:\n```javascript\n{\n  id: 1,\n  // ... existing fields\n  explanation: 'console.log() is JavaScript\\'s way of printing output. The text inside the parentheses (called an argument) gets displayed. Strings must be wrapped in quotes - single or double both work!'\n}\n```\n\n2. Write explanations for all 15 existing levels covering:\n- What the concept does\n- Why it's useful\n- Common variations/alternatives\n- Real-world use cases (brief)\n\n3. Update success feedback display:\n```javascript\n{feedback?.type === 'success' && (\n  <div className=\"mt-4 bg-blue-50 p-4 rounded-lg\">\n    <h4 className=\"font-semibold text-blue-800 flex items-center gap-2\">\n      <Lightbulb className=\"w-5 h-5\" />\n      {t('explanation.title')}\n    </h4>\n    <p className=\"text-blue-700 mt-2\">{levels[currentLevel - 1].explanation}</p>\n  </div>\n)}\n```\n\n4. Add toggle to show/hide explanation (default: shown)\n\n5. Add translations for explanation section labels",
+        "testStrategy": "1. Complete Level 1, verify explanation appears below success message\n2. Check explanations for levels 1-15 are accurate and helpful\n3. Test explanation toggle hides/shows content\n4. Verify explanation doesn't show on error feedback\n5. Test explanation text is readable on mobile",
+        "priority": "low",
+        "dependencies": [],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 23,
+        "title": "Create XP/Points System",
+        "description": "Implement an experience points system that awards points for completing levels based on difficulty and tracks total XP.",
+        "details": "1. Define XP values by difficulty:\n```javascript\nconst XP_VALUES = {\n  beginner: 10,\n  easy: 20,\n  intermediate: 30,\n  advanced: 50\n};\n```\n\n2. Add XP state and persistence:\n```javascript\nconst [totalXP, setTotalXP] = useState(0);\nconst [levelXPAwarded, setLevelXPAwarded] = useState(new Set());\n```\n\n3. Award XP on level completion (only first time):\n```javascript\nconst awardXP = (levelId) => {\n  if (levelXPAwarded.has(levelId)) return;\n  const level = levels.find(l => l.id === levelId);\n  const xp = XP_VALUES[level.difficulty];\n  setTotalXP(prev => prev + xp);\n  setLevelXPAwarded(new Set([...levelXPAwarded, levelId]));\n};\n```\n\n4. Display XP in header:\n```javascript\n<div className=\"flex items-center gap-2 text-yellow-500\">\n  <Star className=\"w-5 h-5\" />\n  <span className=\"font-bold\">{totalXP} XP</span>\n</div>\n```\n\n5. Show XP gained animation on level complete:\n- '+10 XP' floating text that fades up\n- Brief celebration effect\n\n6. Add XP-based achievements to achievement system:\n- 'First Points' (10 XP)\n- 'Century' (100 XP)\n- 'XP Master' (500 XP)\n\n7. Update localStorage schema",
+        "testStrategy": "1. Complete beginner level, verify +10 XP awarded\n2. Complete intermediate level, verify +30 XP awarded\n3. Repeat same level, verify no duplicate XP\n4. Refresh browser, verify XP persists\n5. Test XP animation displays correctly\n6. Verify XP-based achievements unlock at thresholds",
+        "priority": "low",
+        "dependencies": [17, 18],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 24,
+        "title": "Implement Progress Export/Import",
+        "description": "Add ability to export progress as JSON file and import to restore progress on different devices.",
+        "details": "1. Create export function:\n```javascript\nconst exportProgress = () => {\n  const progress = {\n    version: 1,\n    exportDate: new Date().toISOString(),\n    completedLevels: [...completedLevels],\n    streak: streak,\n    maxStreak: maxStreak,\n    currentLevel: currentLevel,\n    totalXP: totalXP,\n    unlockedAchievements: [...unlockedAchievements]\n  };\n  const blob = new Blob([JSON.stringify(progress, null, 2)], { type: 'application/json' });\n  const url = URL.createObjectURL(blob);\n  const a = document.createElement('a');\n  a.href = url;\n  a.download = `jslingo-progress-${new Date().toISOString().split('T')[0]}.json`;\n  a.click();\n};\n```\n\n2. Create import function:\n```javascript\nconst importProgress = (event) => {\n  const file = event.target.files[0];\n  const reader = new FileReader();\n  reader.onload = (e) => {\n    try {\n      const data = JSON.parse(e.target.result);\n      // Validate schema version\n      if (data.version !== 1) throw new Error('Incompatible version');\n      // Restore state\n      setCompletedLevels(new Set(data.completedLevels));\n      setStreak(data.streak || 0);\n      // ... restore other fields\n    } catch (err) {\n      setFeedback({ type: 'error', message: t('import.error') });\n    }\n  };\n  reader.readAsText(file);\n};\n```\n\n3. Add UI in settings/menu area:\n- Export button with Download icon\n- Import button (hidden file input) with Upload icon\n- Confirmation modal before import (warns about overwriting)\n\n4. Add translations for import/export UI",
+        "testStrategy": "1. Click export, verify JSON file downloads\n2. Open exported file, verify all progress data present\n3. Reset progress, then import file, verify restoration\n4. Try importing invalid file, verify error message\n5. Test import with missing fields uses defaults\n6. Verify import confirmation modal prevents accidental overwrites",
+        "priority": "low",
+        "dependencies": [18, 23],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 25,
+        "title": "Add Common Mistakes Database with Targeted Hints",
+        "description": "Create a system that detects common coding mistakes and provides specific, helpful error messages instead of generic errors.",
+        "details": "1. Define common mistakes patterns:\n```javascript\nconst COMMON_MISTAKES = [\n  {\n    pattern: /console\\.Log\\(/i,\n    wrongPattern: true,\n    message: 'JavaScript is case-sensitive! Use console.log() with lowercase \"l\"'\n  },\n  {\n    pattern: /console\\.log\\([^'\"][^)]*[^'\"]\\)/,\n    levelHint: [1, 3, 4], // Applicable to string levels\n    message: 'Strings need quotes! Wrap your text in \"double\" or \\'single\\' quotes'\n  },\n  {\n    pattern: /=(?!=)/,\n    checkContext: (code) => code.includes('if') && !code.includes('=='),\n    message: 'In conditions, use == or === for comparison, not = (assignment)'\n  },\n  {\n    pattern: /for\\s*\\([^;]*;[^;]*;[^)]*\\)\\s*;/,\n    message: 'Oops! You have a semicolon right after your for loop - the loop body won\\'t execute'\n  },\n  {\n    pattern: /function\\s+\\w+\\s*\\([^)]*\\)\\s*[^{]/,\n    message: 'Functions need curly braces {} around their body'\n  }\n];\n```\n\n2. Create mistake detection function:\n```javascript\nconst detectCommonMistake = (code, levelId) => {\n  for (const mistake of COMMON_MISTAKES) {\n    if (mistake.levelHint && !mistake.levelHint.includes(levelId)) continue;\n    if (mistake.pattern.test(code)) {\n      if (mistake.checkContext && !mistake.checkContext(code)) continue;\n      return mistake.message;\n    }\n  }\n  return null;\n};\n```\n\n3. Integrate into code execution:\n- Run mistake detection before eval\n- Show targeted hint in feedback if mistake detected\n- Still show actual error if no common mistake matches\n\n4. Add 15-20 common JavaScript beginner mistakes\n\n5. Track which mistakes user makes for potential analytics",
+        "testStrategy": "1. Type 'console.Log(\"test\")' - verify case-sensitivity hint\n2. Type 'console.log(hello)' without quotes - verify string hint\n3. Type 'if (x = 5)' - verify assignment vs comparison hint\n4. Test actual runtime errors still display correctly\n5. Verify hints don't trigger false positives on correct code",
+        "priority": "low",
+        "dependencies": [22],
+        "status": "pending",
+        "subtasks": []
+      },
+      {
+        "id": 26,
         "title": "Implement Full Keyboard Navigation",
         "description": "Add comprehensive keyboard shortcuts and ensure all interactive elements are accessible via keyboard navigation.",
         "details": "1. Define keyboard shortcuts:\n```javascript\nconst KEYBOARD_SHORTCUTS = {\n  'ctrl+enter': 'runCode',\n  'cmd+enter': 'runCode',\n  'escape': 'closeModal',\n  'h': 'toggleHint',\n  'n': 'nextLevel',\n  'p': 'prevLevel',\n  'l': 'openLevelSelector',\n  '?': 'showKeyboardHelp'\n};\n```\n\n2. Add useEffect for keyboard listener:\n```javascript\nuseEffect(() => {\n  const handleKeyDown = (e) => {\n    // Don't capture when typing in editor\n    if (e.target.tagName === 'TEXTAREA') {\n      if ((e.ctrlKey || e.metaKey) && e.key === 'Enter') {\n        e.preventDefault();\n        runCode();\n      }\n      return;\n    }\n    // Handle global shortcuts\n    const key = e.key.toLowerCase();\n    switch(key) {\n      case 'h': toggleHint(); break;\n      case 'n': nextLevel(); break;\n      // ... etc\n    }\n  };\n  window.addEventListener('keydown', handleKeyDown);\n  return () => window.removeEventListener('keydown', handleKeyDown);\n}, [dependencies]);\n```\n\n3. Add keyboard help modal:\n- Triggered by '?' key\n- Lists all available shortcuts\n- Accessible via button for discoverability\n\n4. Ensure focus management:\n- Modal trap focus when open\n- Return focus to trigger on modal close\n- Visible focus indicators (ring-2 ring-blue-500)\n\n5. Add tabIndex where needed for custom interactive elements\n\n6. Add aria-labels and roles for screen readers\n\n7. Add translations for keyboard help content",
@@ -131,7 +290,7 @@
     ],
     "metadata": {
       "created": "2025-12-02T02:59:29.204Z",
-      "updated": "2025-12-02T02:59:29.204Z",
+      "updated": "2025-12-05T00:00:00.000Z",
       "description": "Tasks for master context"
     }
   }
