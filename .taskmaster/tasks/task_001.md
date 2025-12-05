@@ -2,7 +2,7 @@
 
 **Title:** Create Welcome Landing Page
 
-**Status:** pending
+**Status:** done
 
 **Dependencies:** None
 

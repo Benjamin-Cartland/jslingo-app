@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 9: Arrays Basics
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 9
+**Dependencies:** 9 ✓
 
 **Priority:** high
 

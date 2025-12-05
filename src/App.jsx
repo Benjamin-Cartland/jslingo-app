@@ -1,69 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import { Play, RotateCcw, Lightbulb, CheckCircle, Lock, Trophy, Flame } from 'lucide-react';
+import { Play, RotateCcw, Lightbulb, CheckCircle, Lock, Trophy, Flame, Code, BookOpen, Repeat, Database, ArrowRight, Sparkles, Target, HelpCircle } from 'lucide-react';
 
 const TRANSLATIONS = {
   "en-US": {
     "helloWorldTitle": "Hello World",
-    "helloWorldDescription": "Welcome to JavaScript! Let's start with the traditional first program.",
-    "helloWorldTask": "Write a program that prints 'Hello, World!' to the console.",
-    "helloWorldHint": "Use the console.log() function with the text in quotes: console.log('Hello, World!');",
+    "helloWorldDescription": "Welcome to JavaScript! In programming, we use console.log() to display messages. Think of it as telling the computer to show text on the screen. Text in JavaScript must be wrapped in quotes — either 'single' or \"double\" quotes work!",
+    "helloWorldTask": "Use console.log() to display the message: Hello, World!",
+    "helloWorldHint": "Type console.log() and put your message inside the parentheses. Remember: text needs quotes around it! Example: console.log('Your text here');",
     "variablesNumbersTitle": "Variables and Numbers",
-    "variablesNumbersDescription": "Learn to store and work with numbers using variables.",
-    "variablesNumbersTask": "Create a variable called 'age' with value 25, then print it.",
-    "variablesNumbersHint": "Create a variable: let age = 25; then log it: console.log(age);",
+    "variablesNumbersDescription": "Variables are like labeled boxes that store data. We create them using the 'let' keyword. Unlike text, numbers don't need quotes — just write the number directly! Once stored, you can use the variable name to access the value.",
+    "variablesNumbersTask": "Create a variable called 'age' and store the number 25 in it. Then use console.log() to display its value.",
+    "variablesNumbersHint": "Start with 'let age = 25;' to create the variable. Then use console.log(age) — notice the variable name has no quotes because we want the value, not the word 'age'.",
     "stringVariablesTitle": "String Variables",
-    "stringVariablesDescription": "Work with text data using string variables.",
-    "stringVariablesTask": "Create a variable called 'name' with your name, then print 'Hello, [name]!'",
-    "stringVariablesHint": "Use template literals: console.log(`Hello, ${name}!`);",
-    "userInputTitle": "User Input",
-    "userInputDescription": "Learn to work with variables and output.",
-    "userInputTask": "Create a variable 'color' with value 'blue' and print 'Your favorite color is [color]'",
-    "userInputHint": "Use template literals: let color = 'blue'; console.log(`Your favorite color is ${color}`);",
+    "stringVariablesDescription": "Text data in JavaScript is called a 'string'. You can combine strings with variables using template literals — special strings with backticks (`) that let you embed variables using ${variableName}.",
+    "stringVariablesTask": "Create a variable 'name' with the value 'JavaScript', then print 'Hello, JavaScript!' using a template literal.",
+    "stringVariablesHint": "Create your variable with let name = 'JavaScript'; then use backticks and ${} to embed it: console.log(`Hello, ${name}!`);",
+    "userInputTitle": "Combining Strings",
+    "userInputDescription": "Besides template literals, you can combine strings using the + operator. This is called concatenation. You can join text and variables together: 'Hello ' + name creates a new combined string.",
+    "userInputTask": "Create a variable 'color' with value 'blue'. Use the + operator to print: 'Your favorite color is blue'",
+    "userInputHint": "Use + to join strings: console.log('Your favorite color is ' + color). Don't forget the space before the closing quote!",
     "basicMathTitle": "Basic Math",
-    "basicMathDescription": "Perform mathematical operations in JavaScript.",
+    "basicMathDescription": "JavaScript can perform calculations using arithmetic operators: + (add), - (subtract), * (multiply), / (divide). You can calculate directly in console.log() or store results in variables first.",
     "basicMathTask": "Calculate 15 + 27 and print the result.",
-    "basicMathHint": "Use the + operator: console.log(15 + 27);",
+    "basicMathHint": "You can put math expressions directly inside console.log(): console.log(15 + 27). JavaScript will calculate first, then display the answer.",
     "conditionalsTitle": "Conditionals",
-    "conditionalsDescription": "Make decisions in your code with if statements.",
-    "conditionalsTask": "Check if the number 10 is greater than 5. If true, print 'Yes, 10 is greater than 5'",
-    "conditionalsHint": "Use if statement with curly braces: if (number > 5) { console.log('Yes, 10 is greater than 5'); }",
+    "conditionalsDescription": "Programs need to make decisions! An 'if' statement runs code only when a condition is true. Use comparison operators like > (greater than), < (less than), or === (equals) to create conditions. Code inside the curly braces {} runs only if the condition is true.",
+    "conditionalsTask": "The variable 'number' contains 10. Check if it's greater than 5, and if so, print: 'Yes, 10 is greater than 5'",
+    "conditionalsHint": "Structure: if (condition) { code to run }. Your condition should be: number > 5. Put your console.log() inside the curly braces.",
     "forLoopsTitle": "For Loops",
-    "forLoopsDescription": "Repeat actions using for loops.",
-    "forLoopsTask": "Print numbers from 1 to 3 using a for loop.",
-    "forLoopsHint": "Use a for loop: for (let i = 1; i <= 3; i++) { console.log(i); }",
+    "forLoopsDescription": "Loops repeat code multiple times. A 'for' loop has three parts: 1) let i = 1 (start value), 2) i <= 3 (keep going while true), 3) i++ (add 1 after each loop). The i++ is shorthand for i = i + 1.",
+    "forLoopsTask": "Use a for loop to print the numbers 1, 2, and 3 (each on a new line).",
+    "forLoopsHint": "Structure: for (let i = 1; i <= 3; i++) { console.log(i); }. The loop starts at 1, runs while i is 3 or less, and adds 1 each time.",
     "whileLoopsTitle": "While Loops",
-    "whileLoopsDescription": "Use while loops for conditional repetition.",
-    "whileLoopsTask": "Print numbers from 1 to 3 using a while loop.",
-    "whileLoopsHint": "Increment count each iteration: while (count <= 3) { console.log(count); count++; }",
-    "listsBasicsTitle": "Arrays Basics",
-    "listsBasicsDescription": "Store multiple items in arrays.",
-    "listsBasicsTask": "Create an array with fruits ['apple', 'banana', 'orange'] and print the second item.",
-    "listsBasicsHint": "Arrays use zero-based indexing: fruits[1] gets the second item",
-    "listOperationsTitle": "Array Operations",
-    "listOperationsDescription": "Add and modify array items.",
-    "listOperationsTask": "Create an array [1, 2, 3], add the number 4, then print the entire array.",
-    "listOperationsHint": "Use push() method: numbers.push(4); then console.log(numbers);",
-    "functionsBasicsTitle": "Functions Basics",
-    "functionsBasicsDescription": "Create reusable code with functions.",
-    "functionsBasicsTask": "Define a function called 'greet' that prints 'Hello!' and then call it.",
-    "functionsBasicsHint": "Use function keyword: function greet() { console.log('Hello!'); } then call greet();",
-    "functionsParametersTitle": "Functions with Parameters",
-    "functionsParametersDescription": "Pass data to functions using parameters.",
-    "functionsParametersTask": "Create a function 'sayHello' that takes a name parameter and prints 'Hello, [name]!'. Call it with 'World'.",
-    "functionsParametersHint": "function sayHello(name) { console.log(`Hello, ${name}!`); } then call sayHello('World');",
+    "whileLoopsDescription": "A 'while' loop is simpler than 'for' — it just repeats while a condition is true. Important: you must change the condition inside the loop, or it will run forever! The variable 'count' starts at 1 for you.",
+    "whileLoopsTask": "Using the 'count' variable (starts at 1), print 1, 2, 3 with a while loop.",
+    "whileLoopsHint": "Structure: while (count <= 3) { console.log(count); count++; }. Don't forget count++ or the loop never ends!",
+    "listsBasicsTitle": "Arrays",
+    "listsBasicsDescription": "Arrays store multiple values in a single variable using square brackets []. Each item has an index (position number). Important: counting starts at 0, not 1! So the first item is [0], second is [1], etc.",
+    "listsBasicsTask": "Create an array called 'fruits' with ['apple', 'banana', 'orange'], then print the second item (banana).",
+    "listsBasicsHint": "Create array: let fruits = ['apple', 'banana', 'orange']; Access items with index: fruits[1] gets 'banana' (remember, counting starts at 0!).",
+    "listOperationsTitle": "Array Methods",
+    "listOperationsDescription": "Arrays have built-in methods (functions) you can use. The .push() method adds an item to the end of an array. Call it with a dot after the array name: myArray.push(newItem). This modifies the original array.",
+    "listOperationsTask": "Create an array 'numbers' with [1, 2, 3], use .push() to add 4, then print the array.",
+    "listOperationsHint": "First create the array, then call numbers.push(4) to add 4, then console.log(numbers) to see the result: [1,2,3,4].",
+    "functionsBasicsTitle": "Functions",
+    "functionsBasicsDescription": "Functions are reusable blocks of code. Define one with the 'function' keyword, give it a name, and put code inside curly braces. Important: defining a function doesn't run it — you must call it by name with parentheses: functionName().",
+    "functionsBasicsTask": "Create a function called 'greet' that prints 'Hello!', then call the function to run it.",
+    "functionsBasicsHint": "Two steps: 1) Define: function greet() { console.log('Hello!'); } 2) Call: greet(); — the parentheses tell JavaScript to run it!",
+    "functionsParametersTitle": "Function Parameters",
+    "functionsParametersDescription": "Parameters let functions accept input. Define them in the parentheses: function greet(name). When calling, the value you pass is called an 'argument': greet('World'). Inside the function, use the parameter like a variable.",
+    "functionsParametersTask": "Create a function 'sayHello' that takes a 'name' parameter and prints 'Hello, [name]!'. Call it with 'World' to print 'Hello, World!'",
+    "functionsParametersHint": "Define with parameter: function sayHello(name) { console.log(`Hello, ${name}!`); } Then call with an argument: sayHello('World');",
     "dictionariesTitle": "Objects",
-    "dictionariesDescription": "Store key-value pairs using objects.",
-    "dictionariesTask": "Create an object with person info: name='Alice', age=30. Print the name.",
-    "dictionariesHint": "Use curly braces: let person = {name: 'Alice', age: 30}; access with person.name",
+    "dictionariesDescription": "Objects store data as key-value pairs inside curly braces {}. Each piece of data has a name (key) and a value: {name: 'Alice', age: 30}. Access values using dot notation: objectName.key.",
+    "dictionariesTask": "Create an object 'person' with name='Alice' and age=30. Print the person's name.",
+    "dictionariesHint": "Create: let person = {name: 'Alice', age: 30}; Access the name using dot notation: console.log(person.name);",
     "stringMethodsTitle": "String Methods",
-    "stringMethodsDescription": "Manipulate strings with built-in methods.",
-    "stringMethodsTask": "Take the string 'javascript programming' and print it in uppercase.",
-    "stringMethodsHint": "Use the toUpperCase() method: text.toUpperCase();",
+    "stringMethodsDescription": "Strings also have methods, just like arrays! The .toUpperCase() method returns a new string with all letters capitalized. Other useful methods: .toLowerCase(), .trim() (removes spaces), .length (number of characters).",
+    "stringMethodsTask": "The variable 'text' contains 'javascript programming'. Print it in all uppercase letters.",
+    "stringMethodsHint": "Call the method on the string: console.log(text.toUpperCase()). This returns a new string without changing the original.",
     "finalChallengeTitle": "Final Challenge",
-    "finalChallengeDescription": "Combine everything you've learned!",
-    "finalChallengeTask": "Create an array of numbers [1,2,3,4,5], use a for...of loop to print each number multiplied by 2.",
-    "finalChallengeHint": "Loop through the array: for (let num of numbers) { console.log(num * 2); }",
-    "starterCodeComment": "// Write your code here\n",
+    "finalChallengeDescription": "Time to combine everything! You'll use arrays, loops, and math together. Loop through an array using its length property: for (let i = 0; i < array.length; i++) — then access each item with array[i].",
+    "finalChallengeTask": "Create an array [1,2,3,4,5] and use a for loop to print each number multiplied by 2 (output: 2, 4, 6, 8, 10 on separate lines).",
+    "finalChallengeHint": "Create the array, then loop: for (let i = 0; i < numbers.length; i++) { console.log(numbers[i] * 2); }. Access each number with numbers[i] and multiply by 2.",
+    "starterCodeComment": "// Use console.log() to display your message\n",
     "createVariableComment": "// Create a variable and print it\n",
     "createStringComment": "// Create a string variable\n",
     "getUserInputComment": "// Get user input and respond\n",
@@ -100,7 +100,35 @@ const TRANSLATIONS = {
     "notQuiteRight": "Not quite right. Let's review your solution:",
     "yourOutput": "Your output:",
     "expectedOutput": "Expected output:",
-    "tipLabel": "Tip:"
+    "tipLabel": "Tip:",
+    "welcome.title": "Welcome to JSLingo!",
+    "welcome.subtitle": "Learn JavaScript through interactive coding challenges",
+    "welcome.intro": "JSLingo is your friendly guide to learning JavaScript — the language that powers the web. No prior coding experience needed!",
+    "welcome.whatYouLearn": "What You'll Learn",
+    "welcome.skill.variables": "Variables & Data Types",
+    "welcome.skill.variablesDesc": "Store and work with numbers, text, and more",
+    "welcome.skill.functions": "Functions",
+    "welcome.skill.functionsDesc": "Create reusable blocks of code",
+    "welcome.skill.loops": "Loops",
+    "welcome.skill.loopsDesc": "Repeat actions efficiently",
+    "welcome.skill.arrays": "Arrays & Objects",
+    "welcome.skill.arraysDesc": "Organize and manage collections of data",
+    "welcome.howItWorks": "How It Works",
+    "welcome.step1": "Read the Task",
+    "welcome.step1Desc": "Each level gives you a coding challenge to solve",
+    "welcome.step2": "Write Code",
+    "welcome.step2Desc": "Type your JavaScript solution in the editor",
+    "welcome.step3": "Run & Learn",
+    "welcome.step3Desc": "Get instant feedback and progress to the next level",
+    "welcome.features": "Features",
+    "welcome.feature.progress": "Progress Tracking",
+    "welcome.feature.progressDesc": "Your progress is saved automatically",
+    "welcome.feature.streaks": "Streak System",
+    "welcome.feature.streaksDesc": "Build momentum with consecutive correct answers",
+    "welcome.feature.hints": "Helpful Hints",
+    "welcome.feature.hintsDesc": "Stuck? Get a hint without losing your streak",
+    "welcome.startButton": "Start Learning",
+    "welcome.levels": "15 Levels"
   }
 };
 
@@ -156,7 +184,7 @@ const JSLingo = () => {
       starterCode: t('getUserInputComment'),
       expectedOutput: "Your favorite color is blue",
       hint: t('userInputHint'),
-      solution: "let color = 'blue';\nconsole.log(`Your favorite color is ${color}`);"
+      solution: "let color = 'blue';\nconsole.log('Your favorite color is ' + color);"
     },
     {
       id: 5,
@@ -266,7 +294,7 @@ const JSLingo = () => {
       starterCode: t('finalChallengeComment'),
       expectedOutput: "2\n4\n6\n8\n10",
       hint: t('finalChallengeHint'),
-      solution: "let numbers = [1, 2, 3, 4, 5];\nfor (let num of numbers) {\n  console.log(num * 2);\n}"
+      solution: "let numbers = [1, 2, 3, 4, 5];\nfor (let i = 0; i < numbers.length; i++) {\n  console.log(numbers[i] * 2);\n}"
     }
   ];
 
@@ -304,6 +332,22 @@ const JSLingo = () => {
   const [feedback, setFeedback] = useState(null);
   const [streak, setStreak] = useState(savedProgress.streak);
   const [showLevelSelector, setShowLevelSelector] = useState(false);
+  const [showWelcome, setShowWelcome] = useState(() => {
+    try {
+      return !localStorage.getItem('jslingo-hasSeenWelcome');
+    } catch {
+      return true;
+    }
+  });
+
+  const handleStartLearning = () => {
+    try {
+      localStorage.setItem('jslingo-hasSeenWelcome', 'true');
+    } catch (error) {
+      console.error('Error saving welcome state:', error);
+    }
+    setShowWelcome(false);
+  };
 
   // Save progress to localStorage whenever it changes
   useEffect(() => {
@@ -490,6 +534,131 @@ DO NOT OUTPUT ANYTHING OTHER THAN VALID JSON.
 
   const currentLevelData = levels.find(l => l.id === currentLevel);
   const progressPercentage = (completedLevels.size / levels.length) * 100;
+
+  // Welcome Screen
+  if (showWelcome) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100 flex items-center justify-center p-4">
+        <div className="max-w-4xl w-full">
+          {/* Hero Section */}
+          <div className="text-center mb-12">
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <Code className="w-12 h-12 text-blue-600" />
+              <h1 className="text-5xl font-bold text-blue-600">{t('appTitle')}</h1>
+            </div>
+            <p className="text-2xl text-gray-700 mb-2">{t('welcome.subtitle')}</p>
+            <p className="text-gray-600 max-w-2xl mx-auto">{t('welcome.intro')}</p>
+          </div>
+
+          {/* What You'll Learn */}
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <BookOpen className="w-6 h-6 text-blue-600" />
+              {t('welcome.whatYouLearn')}
+            </h2>
+            <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+              <div className="text-center p-4 bg-blue-50 rounded-lg">
+                <Database className="w-8 h-8 text-blue-600 mx-auto mb-2" />
+                <h3 className="font-semibold text-gray-800">{t('welcome.skill.variables')}</h3>
+                <p className="text-sm text-gray-600">{t('welcome.skill.variablesDesc')}</p>
+              </div>
+              <div className="text-center p-4 bg-green-50 rounded-lg">
+                <Code className="w-8 h-8 text-green-600 mx-auto mb-2" />
+                <h3 className="font-semibold text-gray-800">{t('welcome.skill.functions')}</h3>
+                <p className="text-sm text-gray-600">{t('welcome.skill.functionsDesc')}</p>
+              </div>
+              <div className="text-center p-4 bg-purple-50 rounded-lg">
+                <Repeat className="w-8 h-8 text-purple-600 mx-auto mb-2" />
+                <h3 className="font-semibold text-gray-800">{t('welcome.skill.loops')}</h3>
+                <p className="text-sm text-gray-600">{t('welcome.skill.loopsDesc')}</p>
+              </div>
+              <div className="text-center p-4 bg-orange-50 rounded-lg">
+                <Database className="w-8 h-8 text-orange-600 mx-auto mb-2" />
+                <h3 className="font-semibold text-gray-800">{t('welcome.skill.arrays')}</h3>
+                <p className="text-sm text-gray-600">{t('welcome.skill.arraysDesc')}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* How It Works */}
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-6">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Target className="w-6 h-6 text-blue-600" />
+              {t('welcome.howItWorks')}
+            </h2>
+            <div className="flex flex-col md:flex-row items-center justify-center gap-4">
+              <div className="flex-1 text-center p-4">
+                <div className="w-12 h-12 bg-blue-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl font-bold text-blue-600">1</span>
+                </div>
+                <h3 className="font-semibold text-gray-800">{t('welcome.step1')}</h3>
+                <p className="text-sm text-gray-600">{t('welcome.step1Desc')}</p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-gray-400 hidden md:block" />
+              <div className="flex-1 text-center p-4">
+                <div className="w-12 h-12 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl font-bold text-green-600">2</span>
+                </div>
+                <h3 className="font-semibold text-gray-800">{t('welcome.step2')}</h3>
+                <p className="text-sm text-gray-600">{t('welcome.step2Desc')}</p>
+              </div>
+              <ArrowRight className="w-6 h-6 text-gray-400 hidden md:block" />
+              <div className="flex-1 text-center p-4">
+                <div className="w-12 h-12 bg-purple-100 rounded-full flex items-center justify-center mx-auto mb-3">
+                  <span className="text-xl font-bold text-purple-600">3</span>
+                </div>
+                <h3 className="font-semibold text-gray-800">{t('welcome.step3')}</h3>
+                <p className="text-sm text-gray-600">{t('welcome.step3Desc')}</p>
+              </div>
+            </div>
+          </div>
+
+          {/* Features */}
+          <div className="bg-white rounded-xl shadow-lg p-6 mb-8">
+            <h2 className="text-xl font-bold text-gray-800 mb-4 flex items-center gap-2">
+              <Sparkles className="w-6 h-6 text-blue-600" />
+              {t('welcome.features')}
+            </h2>
+            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+              <div className="flex items-start gap-3 p-3">
+                <Trophy className="w-6 h-6 text-yellow-500 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">{t('welcome.feature.progress')}</h3>
+                  <p className="text-sm text-gray-600">{t('welcome.feature.progressDesc')}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3">
+                <Flame className="w-6 h-6 text-orange-500 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">{t('welcome.feature.streaks')}</h3>
+                  <p className="text-sm text-gray-600">{t('welcome.feature.streaksDesc')}</p>
+                </div>
+              </div>
+              <div className="flex items-start gap-3 p-3">
+                <HelpCircle className="w-6 h-6 text-blue-500 flex-shrink-0" />
+                <div>
+                  <h3 className="font-semibold text-gray-800">{t('welcome.feature.hints')}</h3>
+                  <p className="text-sm text-gray-600">{t('welcome.feature.hintsDesc')}</p>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* CTA Button */}
+          <div className="text-center">
+            <button
+              onClick={handleStartLearning}
+              className="bg-blue-600 hover:bg-blue-700 text-white text-xl font-bold px-12 py-4 rounded-xl shadow-lg hover:shadow-xl transition-all transform hover:scale-105 flex items-center gap-3 mx-auto"
+            >
+              {t('welcome.startButton')}
+              <ArrowRight className="w-6 h-6" />
+            </button>
+            <p className="text-gray-500 mt-4">{t('welcome.levels')}</p>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-100">

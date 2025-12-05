@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 3: String Variables
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 3
+**Dependencies:** 3 ✓
 
 **Priority:** high
 

@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 2: Variables (Numbers)
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 2
+**Dependencies:** 2 ✓
 
 **Priority:** high
 

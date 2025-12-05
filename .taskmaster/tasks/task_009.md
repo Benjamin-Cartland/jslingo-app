@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 8: While Loops
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 8
+**Dependencies:** 8 ✓
 
 **Priority:** high
 

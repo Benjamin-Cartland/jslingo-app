@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 14: String Methods
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 14
+**Dependencies:** 14 ✓
 
 **Priority:** high
 

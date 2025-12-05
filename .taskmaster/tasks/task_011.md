@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 10: Array Operations
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 10
+**Dependencies:** 10 ✓
 
 **Priority:** high
 

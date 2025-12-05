@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 1: Hello World
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 1
+**Dependencies:** 1 ✓
 
 **Priority:** high
 

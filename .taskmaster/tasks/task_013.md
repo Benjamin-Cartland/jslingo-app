@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 12: Functions with Parameters
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 12
+**Dependencies:** 12 ✓
 
 **Priority:** high
 

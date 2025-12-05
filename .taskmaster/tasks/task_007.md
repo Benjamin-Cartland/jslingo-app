@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 6: Conditionals
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 6
+**Dependencies:** 6 ✓
 
 **Priority:** high
 

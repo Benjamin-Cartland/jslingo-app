@@ -2,9 +2,9 @@
 
 **Title:** Review & Update Level 7: For Loops
 
-**Status:** pending
+**Status:** done
 
-**Dependencies:** 7
+**Dependencies:** 7 ✓
 
 **Priority:** high
 
